@@ -183,6 +183,17 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
  .plant-chart-card .ch{height:220px}
 }
 
+
+.period-level-tabs{margin-bottom:10px}
+.period-subcontrols{display:flex;align-items:center;gap:9px;flex-wrap:wrap;position:relative;z-index:2}
+.period-select-wrap{display:flex;align-items:center;gap:9px;padding:7px 12px;border:1px solid #d8e8dc;background:#fff;border-radius:13px;color:#4e6b59;font-size:12px;font-weight:800}
+.period-select-wrap select{min-width:145px;border:0;background:transparent;color:#163e2a;font-size:13px;font-weight:700;padding:6px 22px 6px 4px}
+.year-choices{display:flex;gap:7px;flex-wrap:wrap}
+.year-choice{border:1px solid #d8e8dc;background:#fff;color:#456554;border-radius:999px;padding:9px 15px;font:700 12px system-ui;cursor:pointer;transition:all .2s ease}
+.year-choice:hover{border-color:#2e9e5b;transform:translateY(-1px)}
+.year-choice.active{background:#17633b;border-color:#17633b;color:#fff;box-shadow:0 5px 12px #17633b2b}
+@media(max-width:600px){.period-subcontrols{display:grid;grid-template-columns:1fr}.period-select-wrap{justify-content:space-between}.period-select-wrap select{min-width:0;max-width:68%}.year-choices{gap:6px}.year-choice{padding:9px 13px}}
+
 </style></head><body>
 <header class="site-header">
   <div class="brand">
@@ -211,30 +222,33 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
 </section>
 <div id="demo" class="banner hide">DEMO DATA — illustrative values only, not actual production. Set CFG.API_URL to use the live Google Sheet.</div>
 <div id="msg"></div>
+<section id="ov">
 <div class="period-panel">
-  <div class="period-label"><span class="period-sun">☀</span><div><b>Explore production</b><small>Choose a period to update every chart and block summary</small></div></div>
+  <div class="period-label"><span class="period-sun">☀</span><div><b>Explore production</b><small>Choose All, daily dates, months, or years to explore solar generation</small></div></div>
   <div class="period-controls">
-    <div class="period-tabs" id="periodTabs" role="tablist" aria-label="Production period">
-      <button type="button" class="period-tab" data-range="7" role="tab">7 Days</button>
-      <button type="button" class="period-tab active" data-range="30" role="tab" aria-selected="true">30 Days</button>
-      <button type="button" class="period-tab" data-range="m" role="tab">This Month</button>
-      <button type="button" class="period-tab" data-range="lm" role="tab">Last Month</button>
-      <button type="button" class="period-tab" data-range="y" role="tab">This Year</button>
-      <button type="button" class="period-tab" data-range="all" role="tab">All Time</button>
-      <button type="button" class="period-tab" data-range="c" role="tab">Custom</button>
+    <div class="period-tabs period-level-tabs" id="periodLevelTabs" role="tablist" aria-label="Production view">
+      <button type="button" class="period-tab active" data-level="all" role="tab" aria-selected="true">All</button>
+      <button type="button" class="period-tab" data-level="day" role="tab" aria-selected="false">Day</button>
+      <button type="button" class="period-tab" data-level="month" role="tab" aria-selected="false">Month</button>
+      <button type="button" class="period-tab" data-level="year" role="tab" aria-selected="false">Year</button>
+    </div>
+    <div class="period-subcontrols">
+      <label id="dayMonthWrap" class="period-select-wrap hide">Month
+        <select id="dayMonthSelect" aria-label="Select month for daily graph"></select>
+      </label>
+      <label id="monthYearWrap" class="period-select-wrap hide">Year
+        <select id="monthYearSelect" aria-label="Select year for monthly graph"></select>
+      </label>
+      <div id="yearChoices" class="year-choices hide" aria-label="Choose year"></div>
     </div>
     <select id="rng" class="sr-only" aria-hidden="true" tabindex="-1">
-      <option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option>
-      <option value="m">This month</option><option value="lm">Last month</option>
-      <option value="y">This year</option><option value="all">All available records</option>
-      <option value="c">Custom range</option>
+      <option value="all" selected>All</option><option value="day">Day</option><option value="month">Month</option><option value="year">Year</option>
     </select>
     <span id="cu" class="custom-range hide"><label>From <input type="date" id="f"></label><label>To <input type="date" id="t"></label></span>
   </div>
-  <div class="period-status"><span class="live-dot"></span><span id="periodCaption">Showing the last 30 days</span><span class="period-hint">All values update from available records</span></div>
+  <div class="period-status"><span class="live-dot"></span><span id="periodCaption">Showing all available records</span><span class="period-hint">All charts and block summaries update together</span></div>
 </div>
-
-<section id="ov"><div class="section-heading"><div><span class="eyebrow">CAMPUS AT A GLANCE</span><h2>Solar production overview</h2><p>Track generation across all three installations.</p></div><span class="section-icon">↗</span></div><div class="big">TOTAL SOLAR ENERGY GENERATED (available records)<b id="life"></b><small id="since"></small></div>
+</div><div class="section-heading"><div><span class="eyebrow">CAMPUS AT A GLANCE</span><h2>Solar production overview</h2><p>Track generation across all three installations.</p></div><span class="section-icon">↗</span></div><div class="big">TOTAL SOLAR ENERGY GENERATED (available records)<b id="life"></b><small id="since"></small></div>
 <div class="grid" id="kpi"></div>
 <div class="section-heading plant-heading"><div><span class="eyebrow">BLOCK-WISE BREAKDOWN</span><h2>Where is the energy coming from?</h2><p>Compare production from each building for the selected period.</p></div><span class="section-icon">▥</span></div>
 <div class="grid plant-kpi-grid" id="plantKpi"></div>
@@ -292,10 +306,20 @@ async function load(){
  catch(e){$("msg").innerHTML='<div class="card err">Could not load data from Google Sheets. Please retry later.</div>'}
  rows.sort((a,b)=>a.d<b.d?-1:1);$("upd").textContent="Latest record: "+(rows.length?rows[rows.length-1].d:"none")+" • Times in IST";draw()}
 
-function range(){const v=$("rng").value,y=today.slice(0,4),m=today.slice(0,7);
- if(v=="7")return[addD(today,-6),today];if(v=="30")return[addD(today,-29),today];if(v=="m")return[m+"-01",today];
- if(v=="lm"){const e=addD(m+"-01",-1);return[e.slice(0,7)+"-01",e]}if(v=="y")return[y+"-01-01",today];
- if(v=="all")return[rows.length?rows[0].d:today,today];return[$("f").value||today,$("t").value||today]}
+function range(){
+ const v=window.solarPeriodLevel||"all",current=today;
+ if(v==="day"){
+  const m=$("dayMonthSelect").value||today.slice(0,7),[yy,mm]=m.split("-").map(Number);
+  return[m+"-01",yy+"-"+String(mm).padStart(2,"0")+"-"+String(new Date(yy,mm,0).getDate()).padStart(2,"0")];
+ }
+ if(v==="month"){
+  const y=$("monthYearSelect").value||today.slice(0,4);return[y+"-01-01",y+"-12-31"];
+ }
+ if(v==="year"&&window.solarSelectedYear&&window.solarSelectedYear!=="all"){
+  const y=window.solarSelectedYear;return[y+"-01-01",y+"-12-31"];
+ }
+ return[rows.length?rows[0].d:current,current];
+}
 const inR=(a,b)=>rows.filter(r=>r.d>=a&&r.d<=b);
 const sum=(rs,k)=>rs.reduce((x,r)=>x+(k?r[k]||0:tot(r)),0);
 function monday(){const d=new Date(today+"T00:00:00Z"),w=(d.getUTCDay()+6)%7;return addD(today,-w)}
@@ -303,6 +327,26 @@ function monday(){const d=new Date(today+"T00:00:00Z"),w=(d.getUTCDay()+6)%7;ret
 function card(t,v,s){return`<div class="card"><h4>${t}</h4><div class="v">${v}</div><small>${s||""}</small></div>`}
 function draw(){
  const[a,b]=range(),sel=inR(a,b),last=rows.filter(r=>has(r)).slice(-1)[0];
+ const level=window.solarPeriodLevel||"all";
+ let chartRows=sel;
+ if(level==="day"){
+   const map=new Map(sel.map(r=>[r.d,r]));
+   const [yy,mm]=($("dayMonthSelect").value||today.slice(0,7)).split("-").map(Number);
+   chartRows=[];
+   for(let d=1;d<=new Date(yy,mm,0).getDate();d++){
+     const key=yy+"-"+String(mm).padStart(2,"0")+"-"+String(d).padStart(2,"0"),r=map.get(key);
+     chartRows.push({d:key,label:String(d),a:r?r.a:null,s:r?r.s:null,m:r?r.m:null});
+   }
+ }else if(level==="month"||(level==="year"&&window.solarSelectedYear!=="all")){
+   const year=level==="month"?($("monthYearSelect").value||today.slice(0,4)):window.solarSelectedYear;
+   chartRows=Array.from({length:12},(_,i)=>{
+     const key=year+"-"+String(i+1).padStart(2,"0"),rs=sel.filter(r=>r.d.startsWith(key));
+     return {d:key,label:new Date(Number(year),i,1).toLocaleDateString("en-IN",{month:"short"}),a:sum(rs,"a"),s:sum(rs,"s"),m:sum(rs,"m")};
+   });
+ }else if(level==="year"){
+   const years=[...new Set(rows.map(r=>r.d.slice(0,4)))].sort();
+   chartRows=years.map(y=>{const rs=rows.filter(r=>r.d.startsWith(y));return {d:y,label:y,a:sum(rs,"a"),s:sum(rs,"s"),m:sum(rs,"m")}});
+ }
  const td=rows.find(r=>r.d==today),yd=rows.find(r=>r.d==addD(today,-1));
  const wk=inR(monday(),today),mo=inR(today.slice(0,7)+"-01",today),yr=inR(today.slice(0,4)+"-01-01",today);
  const valid=r=>r.filter(has),life=sum(rows);
@@ -332,12 +376,12 @@ function draw(){
    </div>`;
  }).join("");
  // charts: overall trend, installation share, monthly comparison and dedicated trend per block
- const labels=sel.map(r=>r.d);
- mk("c1","line",labels,[...P.map((p,i)=>({label:p.n,data:sel.map(r=>r[p.k]??null),borderColor:col[i],backgroundColor:col[i],tension:.25,pointRadius:1,spanGaps:false})),{label:"Total",data:sel.map(r=>has(r)?tot(r):null),borderColor:"#0f2744",borderDash:[5,4],pointRadius:0}]);
+ const labels=chartRows.map(r=>r.label||r.d);
+ mk("c1","line",labels,[...P.map((p,i)=>({label:p.n,data:chartRows.map(r=>r[p.k]??null),borderColor:col[i],backgroundColor:col[i],tension:.25,pointRadius:1,spanGaps:false})),{label:"Total",data:chartRows.map(r=>((r.a!=null)||(r.s!=null)||(r.m!=null))?((r.a||0)+(r.s||0)+(r.m||0)):null),borderColor:"#0f2744",borderDash:[5,4],pointRadius:0}]);
  mk("c2","doughnut",P.map(p=>p.n),[{data:P.map(p=>sum(sel,p.k)),backgroundColor:col,borderWidth:3,borderColor:"#ffffff"}]);
  P.forEach((p,i)=>mk("c"+(5+i),"line",labels,[{
    label:p.n+" (kWh)",
-   data:sel.map(r=>r[p.k]??null),
+   data:chartRows.map(r=>r[p.k]??null),
    borderColor:col[i],
    backgroundColor:col[i]+"28",
    fill:true,
@@ -348,9 +392,12 @@ function draw(){
    pointBackgroundColor:col[i],
    spanGaps:false
  }]));
- const yr0=a.slice(0,4),mn=[...Array(12)].map((_,i)=>yr0+"-"+String(i+1).padStart(2,"0"));
- mk("c3","bar",["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],P.map((p,i)=>({label:p.n,backgroundColor:col[i],data:mn.map(m=>sum(rows.filter(r=>r.d.startsWith(m)),p.k)||null)})));
- let c=0;mk("c4","line",labels,[{label:"Cumulative kWh",fill:true,borderColor:"#2e9e5b",backgroundColor:"#2e9e5b44",pointRadius:0,data:sel.map(r=>(c+=tot(r)))}]);
+ const years=[...new Set(rows.map(r=>r.d.slice(0,4)))].sort();
+ const yearMode=level==="year"&&window.solarSelectedYear==="all";
+ const contextual=level==="day"||level==="month"||(level==="year"&&!yearMode);
+ mk("c3","bar",contextual?chartRows.map(r=>r.label||r.d):years,
+ P.map((p,i)=>({label:p.n,backgroundColor:col[i],data:contextual?chartRows.map(r=>r[p.k]??null):years.map(y=>sum(rows.filter(r=>r.d.startsWith(y)),p.k)||null)})));
+ let c=0;mk("c4","line",labels,[{label:"Cumulative kWh",fill:true,borderColor:"#2e9e5b",backgroundColor:"#2e9e5b44",pointRadius:0,data:chartRows.map(r=>{if(r.a==null&&r.s==null&&r.m==null)return null;c+=(r.a||0)+(r.s||0)+(r.m||0);return c;})}]);
  const vs=valid(sel),tots=vs.map(tot);
  $("stat").innerHTML=[card("Highest daily",fmt(Math.max(...tots,0))+" kWh"),card("Lowest valid daily",tots.length?fmt(Math.min(...tots))+" kWh":"—"),card("Average daily",fmt(tots.length?tots.reduce((x,y)=>x+y,0)/tots.length:null)+" kWh","Missing days excluded"),card("Recorded days",vs.length,"Missing days in range: "+(sel.length-vs.length))].join("");
  // environment
@@ -365,25 +412,36 @@ function table(){const q=$("q").value.trim();const rs=rows.filter(r=>r.d.include
 $("q").oninput=table;
 $("csv").onclick=()=>{const t="Date,Auditorium,South Block,Administration Block,Total\n"+rows.map(r=>[r.d,...P.map(p=>r[p.k]??""),has(r)?tot(r):""].join(",")).join("\n");
  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/csv"}));a.download="solar_daily_production.csv";a.click()};
-function updatePeriodTabs(){
- const v=$("rng").value;
- document.querySelectorAll(".period-tab").forEach(btn=>{
-   const active=btn.dataset.range===v;
-   btn.classList.toggle("active",active);
-   btn.setAttribute("aria-selected",active?"true":"false");
- });
- const labels={"7":"Showing the last 7 days","30":"Showing the last 30 days","m":"Showing this month","lm":"Showing last month","y":"Showing this year","all":"Showing all available records","c":"Showing custom date range"};
- $("periodCaption").textContent=labels[v]||"Selected period";
- $("cu").classList.toggle("hide",v!=="c");
+function initSolarPeriodControls_(){
+ const years=[...new Set(rows.map(r=>r.d.slice(0,4)))].sort();
+ const thisYear=today.slice(0,4);if(!years.includes(thisYear))years.push(thisYear);years.sort();
+ const minYear=Number(years[0]||thisYear),maxYear=Number(years[years.length-1]||thisYear);
+ const ms=$("dayMonthSelect"),ys=$("monthYearSelect");
+ ms.innerHTML="";ys.innerHTML="";
+ const names=["January","February","March","April","May","June","July","August","September","October","November","December"];
+ for(let y=minYear;y<=maxYear;y++){for(let m=1;m<=12;m++)ms.add(new Option(names[m-1]+" "+y,y+"-"+String(m).padStart(2,"0")));ys.add(new Option(String(y),String(y)));}
+ ms.value=today.slice(0,7);ys.value=thisYear;
+ const host=$("yearChoices");host.innerHTML="";
+ const add=(value,label)=>{const b=document.createElement("button");b.type="button";b.className="year-choice";b.dataset.year=value;b.textContent=label;b.onclick=()=>{window.solarSelectedYear=value;updateSolarPeriodControls_();draw()};host.appendChild(b)};
+ add("all","All years");years.forEach(y=>add(y,y));
 }
-document.querySelectorAll(".period-tab").forEach(btn=>btn.addEventListener("click",()=>{
- $("rng").value=btn.dataset.range;
- updatePeriodTabs();
- draw();
-}));
-$("rng").onchange=()=>{updatePeriodTabs();draw()};
+function updateSolarPeriodControls_(){
+ const level=window.solarPeriodLevel||"all";
+ document.querySelectorAll("[data-level]").forEach(b=>{const active=b.dataset.level===level;b.classList.toggle("active",active);b.setAttribute("aria-selected",active?"true":"false")});
+ $("dayMonthWrap").classList.toggle("hide",level!=="day");
+ $("monthYearWrap").classList.toggle("hide",level!=="month");
+ $("yearChoices").classList.toggle("hide",level!=="year");
+ document.querySelectorAll(".year-choice").forEach(b=>b.classList.toggle("active",b.dataset.year===(window.solarSelectedYear||"all")));
+ const caps={all:"Showing all available records combined",day:"Daily production for every date in the selected month",month:"Monthly production from January to December",year:window.solarSelectedYear!=="all"?"Showing production for "+window.solarSelectedYear:"Comparing annual production across available years"};
+ $("periodCaption").textContent=caps[level]||"Selected period";$("rng").value=level;
+}
+window.solarPeriodLevel="all";window.solarSelectedYear="all";
+initSolarPeriodControls_();
+document.querySelectorAll("[data-level]").forEach(b=>b.addEventListener("click",()=>{window.solarPeriodLevel=b.dataset.level;if(b.dataset.level==="year")window.solarSelectedYear="all";updateSolarPeriodControls_();draw()}));
+$("dayMonthSelect").onchange=draw;$("monthYearSelect").onchange=draw;
+$("rng").onchange=()=>{window.solarPeriodLevel=$("rng").value;updateSolarPeriodControls_();draw()};
 $("f").onchange=$("t").onchange=draw;
-updatePeriodTabs();
+updateSolarPeriodControls_();
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x==b));
  ["ov","an","en","hi","ad"].forEach(s=>$(s).classList.toggle("hide",s!=b.dataset.t));window.scrollTo(0,0);draw()});
 

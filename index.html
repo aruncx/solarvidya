@@ -226,6 +226,15 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
  .period-row-label{padding:0 0 6px 2px;}
 }
 
+
+/* Sustainability impact panel */
+.impact-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin:18px 0 22px;padding:clamp(20px,4vw,34px);border-radius:22px;background:linear-gradient(125deg,#103b2b,#176044 58%,#23865a);color:#fff;position:relative;overflow:hidden}
+.impact-hero:after{content:"☀";position:absolute;right:18px;top:-34px;font-size:150px;opacity:.10;pointer-events:none}
+.impact-hero .eyebrow{color:#b9f3cd}.impact-hero h3{font-size:clamp(25px,4vw,38px);margin:8px 0 10px;color:#fff}.impact-hero p{color:#e0f4e7;max-width:620px;line-height:1.65}.impact-number{align-self:center;background:#ffffff14;border:1px solid #ffffff30;border-radius:18px;padding:22px;position:relative;z-index:1}.impact-number strong{display:block;font-size:clamp(32px,5vw,46px);line-height:1.1}.impact-number span{display:block;margin-top:8px;color:#e0f4e7;font-size:13px}
+.impact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:16px 0 24px}.impact-card{padding:20px;border:1px solid var(--line);border-radius:18px;background:var(--card);min-width:0}.impact-card .ico{font-size:27px}.impact-card .label{font-size:13px;color:var(--mut);margin:10px 0 6px}.impact-card strong{font-size:clamp(22px,3vw,30px);display:block;line-height:1.2;overflow-wrap:anywhere}.impact-card small{display:block;color:var(--mut);font-size:12px;line-height:1.5;margin-top:9px}.impact-section-title{margin:26px 0 12px}.impact-section-title h3{margin:0 0 5px}.impact-section-title p{color:var(--mut);margin:0}.sdg-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.sdg-item{display:flex;gap:13px;padding:16px;border:1px solid var(--line);border-radius:15px;background:var(--card)}.sdg-badge{flex:0 0 42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#e0f5e8;color:#145b38;font-weight:800}.sdg-item h4{margin:1px 0 5px}.sdg-item p{margin:0;color:var(--mut);font-size:13px;line-height:1.55}.impact-method{margin:18px 0;padding:16px 18px;border-radius:14px;background:var(--soft);color:var(--mut);font-size:12px;line-height:1.65}.impact-method b{color:var(--text)}
+@media(max-width:700px){.impact-hero{grid-template-columns:1fr}.impact-number{max-width:none}.impact-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.impact-card{padding:15px}.sdg-grid{grid-template-columns:1fr}}
+@media(max-width:390px){.impact-grid{grid-template-columns:1fr}}
+
 </style></head><body>
 <header class="site-header">
   <div class="brand">
@@ -296,8 +305,12 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
 <div class="card"><h4>Cumulative Production (kWh)</h4><div class="ch"><canvas id="c4"></canvas></div></div></div>
 <div class="grid" id="stat"></div></section>
 
-<section id="en" class="hide"><div class="section-heading"><div><span class="eyebrow">BEYOND GENERATION</span><h2>Our contribution to a greener planet</h2><p>Environmental equivalents are estimates based on configured factors.</p></div><span class="section-icon">♧</span></div><div class="grid" id="envk"></div>
-<p style="color:var(--mut)">Estimates only, based on configurable conversion factors (see CFG in the page source). They are not measured emission reductions.</p></section>
+<section id="en" class="hide"><div class="section-heading"><div><span class="eyebrow">BEYOND GENERATION</span><h2>Solar energy. Measurable impact.</h2><p>Explore what the campus solar generation could mean for climate, resources and everyday life.</p></div><span class="section-icon">♧</span></div>
+<div class="impact-hero"><div><span class="eyebrow">CAMPUS SUSTAINABILITY SNAPSHOT</span><h3>Clean energy powering a greener tomorrow</h3><p>Every unit of solar electricity generated can reduce the need for grid electricity. The equivalents below are illustrative estimates calculated from the production records currently available in this dashboard.</p></div><div class="impact-number"><strong id="impactEnergy">—</strong><span>Total recorded solar generation across all three installations</span></div></div>
+<div class="impact-grid" id="envk"></div>
+<div class="impact-section-title"><h3>How this connects to sustainability</h3><p>Solar generation supports institutional sustainability goals in several complementary ways.</p></div>
+<div class="sdg-grid"><div class="sdg-item"><div class="sdg-badge">13</div><div><h4>Climate action</h4><p id="sdgClimate">Estimated avoided CO₂ emissions are calculated from the configured grid-emission factor.</p></div></div><div class="sdg-item"><div class="sdg-badge">7</div><div><h4>Affordable and clean energy</h4><p>On-campus solar contributes renewable electricity and helps the institution understand the share of demand met by clean energy. Add verified campus consumption data to calculate this share.</p></div></div><div class="sdg-item"><div class="sdg-badge">12</div><div><h4>Responsible consumption and production</h4><p>Tracking production supports energy awareness, better monitoring and informed decisions about electricity use.</p></div></div><div class="sdg-item"><div class="sdg-badge">6</div><div><h4>Water stewardship</h4><p id="sdgWater">Avoided thermal-generation water use is a broad indicative estimate, not a site-measured saving.</p></div></div><div class="sdg-item"><div class="sdg-badge">4</div><div><h4>Education and awareness</h4><p>The dashboard turns real production records into a learning resource for students, staff and visitors.</p></div></div><div class="sdg-item"><div class="sdg-badge">11</div><div><h4>Sustainable communities</h4><p>Clean-energy monitoring helps demonstrate the campus contribution to a more sustainable built environment.</p></div></div></div>
+<div class="impact-method"><b>Calculation notes:</b> Values are approximate equivalents, not direct measurements. Factors used: 0.71 kg CO₂/kWh; 0.55–0.70 kg coal/kWh; 21.8 kg CO₂ absorbed per mature tree per year; 1,200 kWh/year per household; 2.3 kg CO₂/litre of petrol; 0.12 kWh/km for EV driving; and 3–4 litres of thermal-plant water use per kWh. Tree equivalent means the annual CO₂ absorption of an equivalent number of mature trees—not trees planted or saved. Water figures vary significantly by generation technology and location. Review and cite authoritative sources for these factors before using them in formal reporting.</div></section>
 
 <section id="hi" class="hide"><div class="section-heading"><div><span class="eyebrow">TRANSPARENCY & RECORDS</span><h2>Historical production data</h2><p>Search, review, and export recorded daily values.</p></div><span class="section-icon">▤</span></div><div class="bar"><input id="q" placeholder="Search date (YYYY-MM)"> <button class="btn" id="csv">Export CSV</button></div>
 <div class="card sc"><table><thead><tr><th>Date</th><th>Auditorium</th><th>South Block</th><th>Admin Block</th><th>Total (kWh)</th></tr></thead><tbody id="tb"></tbody></table></div></section>
@@ -313,9 +326,12 @@ const CFG={
  API_URL:"https://script.google.com/macros/s/AKfycbyY3KKc8P0md7dvKL6pHVJsFgfgtixX4Frg8wIClthSDIg4YHUpz2ZcE1ekAVRvzRxw/exec", // Connected Google Apps Script web app.
   // Conversion factors: set and document source/version before public use.
  CO2_KG_PER_KWH:0.71,   // PLACEHOLDER: replace with current CEA grid factor, record source/version
- COAL_KG_PER_KWH:null,  // e.g. documented coal displacement factor
- KG_CO2_PER_TREE_YEAR:null, // verified tree-equivalence factor
- KWH_PER_HOME_YEAR:null,
+ COAL_KG_PER_KWH:0.625,  // midpoint of illustrative 0.55–0.70 kg/kWh range
+ KG_CO2_PER_TREE_YEAR:21.8, // illustrative annual CO2 absorption per mature tree
+ KWH_PER_HOME_YEAR:1200, // illustrative annual household electricity use
+ PETROL_KG_CO2_PER_LITRE:2.3,
+ EV_KWH_PER_KM:0.12,
+ WATER_LITRES_PER_KWH:3.5,
  PLANTS:[{k:"a",n:"Auditorium",kwp:100,meter:"Mf-40"},{k:"s",n:"South Block",kwp:15,meter:"(configure)"},{k:"m",n:"Administration Block",kwp:120,meter:"Mf-50"}]
 };
 const $=i=>document.getElementById(i),P=CFG.PLANTS,TZ="Asia/Kolkata";
@@ -457,10 +473,23 @@ function draw(){
  let c=0;mk("c4","line",labels,[{label:"Cumulative kWh",fill:true,borderColor:"#2e9e5b",backgroundColor:"#2e9e5b44",pointRadius:0,data:chartRows.map(r=>{if(r.a==null&&r.s==null&&r.m==null)return null;c+=(r.a||0)+(r.s||0)+(r.m||0);return c;})}]);
  const vs=valid(sel),tots=vs.map(tot);
  $("stat").innerHTML=[card("Highest daily",fmt(Math.max(...tots,0))+" kWh"),card("Lowest valid daily",tots.length?fmt(Math.min(...tots))+" kWh":"—"),card("Average daily",fmt(tots.length?tots.reduce((x,y)=>x+y,0)/tots.length:null)+" kWh","Missing days excluded"),card("Recorded days",vs.length,"Missing days in range: "+(sel.length-vs.length))].join("");
- // environment
- const e=k=>k==null?"Requires verified conversion factor":fmt(k);
- const E=[["Today",td?sum([td]):0],["This month",sum(mo)],["This year",sum(yr)],["All records",life]];
- $("envk").innerHTML=E.map(([n,k])=>card(n+" — Energy",en(k),"CO₂ avoided (est.): "+(CFG.CO2_KG_PER_KWH?fmt(k*CFG.CO2_KG_PER_KWH)+" kg":"factor not set")+"<br>Coal equivalent: "+e(CFG.COAL_KG_PER_KWH&&k*CFG.COAL_KG_PER_KWH)+"<br>Tree equivalent: "+e(CFG.KG_CO2_PER_TREE_YEAR&&CFG.CO2_KG_PER_KWH&&k*CFG.CO2_KG_PER_KWH/CFG.KG_CO2_PER_TREE_YEAR)+"<br>Homes powered: "+e(CFG.KWH_PER_HOME_YEAR&&k/CFG.KWH_PER_HOME_YEAR))).join("");
+ // Sustainability impact: use all available recorded generation; equivalents are estimates.
+ const impactKwh=Math.max(0,Number(life)||0), co2kg=impactKwh*CFG.CO2_KG_PER_KWH;
+ $("impactEnergy").textContent=en(impactKwh);
+ const metric=(icon,label,value,detail)=>`<div class="impact-card"><div class="ico">${icon}</div><div class="label">${label}</div><strong>${value}</strong><small>${detail}</small></div>`;
+ const lowCoal=impactKwh*0.55/1000,highCoal=impactKwh*0.70/1000;
+ const treesYear=co2kg/CFG.KG_CO2_PER_TREE_YEAR,homes=impactKwh/CFG.KWH_PER_HOME_YEAR,petrol=co2kg/CFG.PETROL_KG_CO2_PER_LITRE,evkm=impactKwh/CFG.EV_KWH_PER_KM,waterLow=impactKwh*3,waterHigh=impactKwh*4;
+ $("envk").innerHTML=[
+ metric("🌍","Estimated CO₂ avoided",fmt(co2kg/1000)+" tonnes","Using 0.71 kg CO₂ per kWh of solar generation."),
+ metric("🪨","Coal equivalent not burned",fmt(lowCoal)+"–"+fmt(highCoal)+" tonnes","Illustrative range using 0.55–0.70 kg coal per kWh."),
+ metric("🌳","Mature-tree annual equivalent",fmt(treesYear)+" trees/year","Equivalent annual CO₂ absorption; not trees planted or saved."),
+ metric("🏠","Household electricity equivalent",fmt(homes)+" homes/year","At an illustrative 1,200 kWh per household per year."),
+ metric("⛽","Petrol CO₂ equivalent",fmt(petrol)+" litres","CO₂ equivalent based on 2.3 kg CO₂ per litre of petrol."),
+ metric("🚗","Electric vehicle distance",fmt(evkm)+" km","At an illustrative EV consumption of 0.12 kWh/km."),
+ metric("💧","Thermal-generation water equivalent",en(0)+"".replace(en(0),fmt(waterLow/1000)+"–"+fmt(waterHigh/1000))+" million litres","Indicative range of 3–4 litres per kWh; highly technology-dependent.")
+ ].join("");
+ $("sdgClimate").textContent=`Estimated avoided emissions: about ${fmt(co2kg/1000)} tonnes of CO₂ across all recorded solar generation.`;
+ $("sdgWater").textContent=`Indicative thermal-generation water-use equivalent: ${fmt(waterLow/1e6)}–${fmt(waterHigh/1e6)} million litres. This is not a measured campus water saving.`;
  table()}
 function mk(id,type,labels,datasets){
  const canvas=$(id); if(!canvas||typeof Chart==="undefined") return;

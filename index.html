@@ -211,6 +211,21 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
   display: none !important;
 }
 
+
+/* Mobile tab navigation: allow reliable horizontal touch/trackpad scrolling. */
+.compact-tabs{overflow-x:auto!important;overflow-y:hidden;white-space:nowrap;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;touch-action:pan-x;scrollbar-width:thin;max-width:100%;}
+.compact-tabs .period-tab{flex:0 0 auto;white-space:nowrap;}
+.period-tab-row,.day-tab-content{min-width:0;max-width:100%;}
+.day-tab-content{flex:1;overflow:hidden;}
+.day-month-caption{font-size:12px;font-weight:800;color:#17633b;margin:0 0 7px 2px;}
+@media(max-width:600px){
+ .period-controls,.period-subcontrols,.period-tab-row{min-width:0;max-width:100%;}
+ .compact-tabs{width:100%;padding:3px 2px 10px;scroll-snap-type:x proximity;}
+ .compact-tabs .period-tab{scroll-snap-align:start;}
+ .period-tab-row{display:block;}
+ .period-row-label{padding:0 0 6px 2px;}
+}
+
 </style></head><body>
 <header class="site-header">
   <div class="brand">
@@ -252,7 +267,7 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
     <div class="period-subcontrols">
       <div id="dayYearWrap" class="period-tab-row hide"><span class="period-row-label">Year</span><div id="dayYearTabs" class="period-tabs compact-tabs" aria-label="Daily view year"></div></div>
       <div id="dayMonthWrap" class="period-tab-row hide"><span class="period-row-label">Month</span><div id="dayMonthTabs" class="period-tabs compact-tabs" aria-label="Daily view month"></div></div>
-      <div id="dayTabsWrap" class="period-tab-row hide"><span class="period-row-label">Date</span><div id="dayTabs" class="period-tabs compact-tabs day-tabs" aria-label="Day of month"></div></div>
+      <div id="dayTabsWrap" class="period-tab-row hide"><span class="period-row-label">Date</span><div class="day-tab-content"><div id="dayMonthCaption" class="day-month-caption" aria-live="polite"></div><div id="dayTabs" class="period-tabs compact-tabs day-tabs" aria-label="Day of month"></div></div></div>
       <div id="monthYearWrap" class="period-tab-row hide"><span class="period-row-label">Year</span><div id="monthYearTabs" class="period-tabs compact-tabs" aria-label="Monthly view year"></div></div>
       <div id="monthTabsWrap" class="period-tab-row hide"><span class="period-row-label">Month</span><div id="monthTabs" class="period-tabs compact-tabs" aria-label="Month of year"></div></div>
       <div id="yearTabsWrap" class="period-tab-row hide"><span class="period-row-label">Year</span><div id="yearTabs" class="period-tabs compact-tabs" aria-label="Year selection"></div></div>
@@ -325,6 +340,11 @@ async function load(){
 
 function range(){
  const level=window.solarPeriodLevel||"all";
+ // In All view, use the visible From/To controls when valid; default to all available records.
+ if(level==="all"){
+  const from=$("f")?.value, to=$("t")?.value;
+  if(from&&to&&from<=to)return[from,to];
+ }
  if(level==="day"&&window.solarSelectedDate)return[window.solarSelectedDate,window.solarSelectedDate];
  if(level==="month"&&window.solarSelectedMonth){
   const [yy,mm]=window.solarSelectedMonth.split("-").map(Number);
@@ -442,8 +462,11 @@ function draw(){
  const E=[["Today",td?sum([td]):0],["This month",sum(mo)],["This year",sum(yr)],["All records",life]];
  $("envk").innerHTML=E.map(([n,k])=>card(n+" — Energy",en(k),"CO₂ avoided (est.): "+(CFG.CO2_KG_PER_KWH?fmt(k*CFG.CO2_KG_PER_KWH)+" kg":"factor not set")+"<br>Coal equivalent: "+e(CFG.COAL_KG_PER_KWH&&k*CFG.COAL_KG_PER_KWH)+"<br>Tree equivalent: "+e(CFG.KG_CO2_PER_TREE_YEAR&&CFG.CO2_KG_PER_KWH&&k*CFG.CO2_KG_PER_KWH/CFG.KG_CO2_PER_TREE_YEAR)+"<br>Homes powered: "+e(CFG.KWH_PER_HOME_YEAR&&k/CFG.KWH_PER_HOME_YEAR))).join("");
  table()}
-function mk(id,type,labels,datasets){charts[id]&&charts[id].destroy();
- charts[id]=new Chart($(id),{type,data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,animation:{duration:850,easing:"easeOutQuart"},interaction:{mode:"index",intersect:false},plugins:{legend:{position:"bottom",labels:{usePointStyle:true,boxWidth:8,padding:16}},tooltip:{padding:12,cornerRadius:10,displayColors:true}},scales:type=="doughnut"?{}:{x:{grid:{display:false},ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:8}},y:{title:{display:true,text:"kWh"},beginAtZero:true,grid:{color:"rgba(100,130,110,.13)"},ticks:{precision:0}}}}})}
+function mk(id,type,labels,datasets){
+ const canvas=$(id); if(!canvas||typeof Chart==="undefined") return;
+ if(charts[id]){charts[id].destroy();delete charts[id];}
+ charts[id]=new Chart(canvas,{type,data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,resizeDelay:80,animation:{duration:650,easing:"easeOutQuart"},interaction:{mode:"index",intersect:false},plugins:{legend:{position:"bottom",labels:{usePointStyle:true,boxWidth:8,padding:16}},tooltip:{padding:12,cornerRadius:10,displayColors:true}},scales:type==="doughnut"?{}:{x:{grid:{display:false},ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:8}},y:{title:{display:true,text:"kWh"},beginAtZero:true,grid:{color:"rgba(100,130,110,.13)"},ticks:{precision:0}}}}});
+}
 function table(){const q=$("q").value.trim();const rs=rows.filter(r=>r.d.includes(q)).reverse().slice(0,400);
  $("tb").innerHTML=rs.map(r=>`<tr><td data-label="Date">${r.d}</td>${P.map(p=>`<td data-label="${p.n}">${r[p.k]==null?"<i>missing</i>":fmt(r[p.k])}</td>`).join("")}<td data-label="Total (kWh)"><b>${has(r)?fmt(tot(r)):"—"}</b></td></tr>`).join("")}
 $("q").oninput=table;
@@ -476,13 +499,21 @@ function initSolarPeriodControls_(){
   const old=window.solarSelectedDate.slice(8,10),m=window.solarSelectedDate.slice(5,7);
   const max=new Date(Number(y),Number(m),0).getDate();
   window.solarSelectedDate=y+"-"+m+"-"+String(Math.min(Number(old),max)).padStart(2,"0");
+  updateDayMonthCaption();
  });
  makeTabs("dayMonthTabs",names.map((n,i)=>({label:n.slice(0,3),value:String(i+1).padStart(2,"0")})),()=>window.solarSelectedDate.slice(5,7),m=>{
   const y=window.solarSelectedDate.slice(0,4),max=new Date(Number(y),Number(m),0).getDate();
   window.solarSelectedDate=y+"-"+m+"-"+String(Math.min(Number(window.solarSelectedDate.slice(8,10)),max)).padStart(2,"0");
  });
  const dayMonth=window.solarSelectedDate.slice(0,7),[dy,dm]=dayMonth.split("-").map(Number),days=new Date(dy,dm,0).getDate();
- makeTabs("dayTabs",Array.from({length:days},(_,i)=>({label:String(i+1),value:dayMonth+"-"+String(i+1).padStart(2,"0")})),()=>window.solarSelectedDate,d=>{window.solarSelectedDate=d;window.solarSelectedMonth=d.slice(0,7)});
+ function updateDayMonthCaption(){
+ const el=document.getElementById("dayMonthCaption");
+ if(!el || !window.solarSelectedDate) return;
+ const parts=window.solarSelectedDate.split("-");
+ const d=new Date(Number(parts[0]),Number(parts[1])-1,1);
+ el.textContent="Showing dates for "+d.toLocaleDateString("en-IN",{month:"long",year:"numeric"});
+}
+makeTabs("dayTabs",Array.from({length:days},(_,i)=>({label:String(i+1),value:dayMonth+"-"+String(i+1).padStart(2,"0")})),()=>window.solarSelectedDate,d=>{window.solarSelectedDate=d;window.solarSelectedMonth=d.slice(0,7)});
  makeTabs("monthYearTabs",years.map(y=>({label:y,value:y})),()=>window.solarSelectedMonth.slice(0,4),y=>{window.solarSelectedMonth=y+"-"+window.solarSelectedMonth.slice(5,7)});
  makeTabs("monthTabs",names.map((n,i)=>({label:n.slice(0,3),value:String(i+1).padStart(2,"0")})),()=>window.solarSelectedMonth.slice(5,7),m=>{
   const y=window.solarSelectedMonth.slice(0,4);
@@ -511,10 +542,17 @@ function updateSolarPeriodControls_(){
  $("monthYearWrap").classList.add("hide");
  $("monthTabsWrap").classList.toggle("hide",level!=="month");
  $("yearTabsWrap").classList.toggle("hide",level!=="year");
- const caps={all:"Showing all available records combined",day:"Select a date to view that day's production; the graph shows every date in the selected month",month:"Select a month; the graph compares January–December for the chosen year",year:window.solarSelectedYear!=="all"?"Showing production for "+window.solarSelectedYear:"Comparing annual production across all available years"};
+ // Keep the custom From/To range visible in the All view; date/month/year tabs replace it in other views.
+ $("cu").classList.toggle("hide",level!=="all");
+ const caps={all:"Choose a From and To date to filter production, or keep the full available range",day:"Select a date to view that day's production; the graph shows every date in the selected month",month:"Select a month; the graph compares January–December for the chosen year",year:window.solarSelectedYear!=="all"?"Showing production for "+window.solarSelectedYear:"Comparing annual production across all available years"};
  $("periodCaption").textContent=caps[level]||"Selected period";$("rng").value=level;
 }
 window.solarPeriodLevel="all";window.solarSelectedYear="all";window.solarSelectedMonth=today.slice(0,7);window.solarSelectedDate=today;
+// Initialize the date-range inputs so From/To are visible and usable immediately.
+if($("f")&&!$("f").value)$("f").value=rows.length?rows[0].d:today;
+if($("t")&&!$("t").value)$("t").value=today;
+if($("f"))$("f").max=today;
+if($("t"))$("t").max=today;
 initSolarPeriodControls_();
 document.querySelectorAll("[data-level]").forEach(b=>b.addEventListener("click",()=>{
  window.solarPeriodLevel=b.dataset.level;
@@ -522,10 +560,25 @@ document.querySelectorAll("[data-level]").forEach(b=>b.addEventListener("click",
  initSolarPeriodControls_();updateSolarPeriodControls_();draw();
 }));
 $("rng").onchange=()=>{window.solarPeriodLevel=$("rng").value;initSolarPeriodControls_();updateSolarPeriodControls_();draw()};
-$("f").onchange=$("t").onchange=draw;
+$("f").onchange=()=>{if($("f").value&&$("t").value&&$("f").value>$("t").value)$("t").value=$("f").value;draw()};
+$("t").onchange=()=>{if($("f").value&&$("t").value&&$("t").value<$("f").value)$("f").value=$("t").value;draw()};
 updateSolarPeriodControls_();
-document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x==b));
- ["ov","an","en","hi","ad"].forEach(s=>$(s).classList.toggle("hide",s!=b.dataset.t));window.scrollTo(0,0);draw()});
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+ document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));
+ ["ov","an","en","hi","ad"].forEach(s=>$(s).classList.toggle("hide",s!==b.dataset.t));
+ window.scrollTo(0,0);
+ // Rebuild after the target section becomes visible, then resize Chart.js canvases.
+ // Charts first created inside display:none sections can otherwise retain zero dimensions.
+ requestAnimationFrame(()=>{
+   try { draw(); } catch(err) { console.error("Solar dashboard chart refresh failed:",err); }
+   requestAnimationFrame(()=>Object.values(charts).forEach(chart=>{
+     try { chart.resize(); chart.update("none"); } catch(err) { console.warn("Chart resize skipped:",err); }
+   }));
+ });
+});
+window.addEventListener("resize",()=>{
+  Object.values(charts).forEach(chart=>{try{chart.resize();}catch(e){}});
+});
 
 // ---- Admin entry ----
 function buildForm(){$("d").value=today;$("dt").onclick=()=>{$("d").value=today;prev()};$("dy").onclick=()=>{$("d").value=addD(today,-1);prev()};$("d").onchange=prev;pick(sel)}
@@ -557,4 +610,7 @@ $("lb").onclick=async()=>{const u=$("lu").value.trim(),p=$("lp").value;$("le").t
 $("lp").onkeydown=e=>{if(e.key=="Enter")$("lb").click()};
 $("nog").onclick=()=>enter("demo user");
 window.onload=()=>{try{$("lu").value=localStorage.getItem("su")||""}catch(e){}load()};
+document.getElementById("dayTabs")?.addEventListener("click",()=>setTimeout(updateDayMonthCaption,0));
+document.getElementById("dayMonthTabs")?.addEventListener("click",()=>setTimeout(updateDayMonthCaption,0));
+updateDayMonthCaption();
 </script></body></html>

@@ -115,6 +115,74 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
 }
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 
+
+/* Period tabs and block-wise analytics */
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.period-panel{margin:4px 0 25px;padding:18px 20px;background:linear-gradient(135deg,#fff 0%,#f3fbf5 100%);border:1px solid #dcebe0;border-radius:22px;box-shadow:0 12px 30px #103b2110;position:relative;overflow:hidden}
+.period-panel:after{content:"☼";position:absolute;right:18px;top:-30px;font-size:120px;line-height:1;color:#e8f5e8;pointer-events:none}
+.period-label{display:flex;align-items:center;gap:11px;margin-bottom:15px;position:relative;z-index:1}
+.period-sun{display:grid;place-items:center;width:40px;height:40px;border-radius:14px;background:#fff0c2;color:#9c6500;font-size:24px;box-shadow:inset 0 0 0 1px #f2d98a}
+.period-label b{display:block;font-size:16px;color:#153d29}
+.period-label small{display:block;color:#668071;font-size:12px;margin-top:2px}
+.period-controls{position:relative;z-index:1}
+.period-tabs{display:flex;align-items:center;gap:7px;overflow-x:auto;padding:3px 2px 9px;scrollbar-width:thin;scrollbar-color:#b8d8c0 transparent}
+.period-tab{flex:0 0 auto;border:1px solid #d8e8dc;background:#fff;color:#456554;border-radius:999px;padding:11px 17px;min-height:43px;font:700 13px/1.1 system-ui,-apple-system,sans-serif;cursor:pointer;transition:transform .2s ease,background .25s ease,color .25s ease,box-shadow .25s ease,border-color .25s ease}
+.period-tab:hover{transform:translateY(-2px);border-color:#3d9b61;box-shadow:0 5px 13px #1c6a3817}
+.period-tab.active{background:linear-gradient(135deg,#17633b,#2e9e5b);border-color:#23814b;color:#fff;box-shadow:0 6px 16px #17633b32}
+.period-tab:focus-visible{outline:3px solid #f0bc35;outline-offset:2px}
+.custom-range{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.custom-range label{display:flex;align-items:center;gap:8px;font-size:12px;color:#5c7564;font-weight:700}
+.custom-range input{background:#fff;border-color:#d4e4d8;min-height:42px;padding:8px 10px;font-size:14px}
+.period-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border-top:1px solid #e2eee5;margin-top:8px;padding-top:12px;font-size:12px;color:#52725e;position:relative;z-index:1}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#2e9e5b;box-shadow:0 0 0 4px #2e9e5b20;animation:solarPulse 2s infinite}
+.period-hint{margin-left:auto;color:#829589}
+@keyframes solarPulse{0%,100%{box-shadow:0 0 0 3px #2e9e5b18}50%{box-shadow:0 0 0 7px #2e9e5b06}}
+.plant-heading{margin-top:29px}
+.plant-kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:14px}
+.plant-kpi{position:relative;overflow:hidden;border:1px solid #e1ece4;transition:transform .25s ease,box-shadow .25s ease}
+.plant-kpi:hover{transform:translateY(-4px);box-shadow:0 15px 28px #123b2115}
+.plant-kpi:after{content:"";position:absolute;width:100px;height:100px;border-radius:50%;right:-38px;top:-45px;background:var(--plant-tint,#e6f5e9);opacity:.8}
+.plant-kpi-head{display:flex;align-items:center;gap:9px;position:relative;z-index:1}
+.plant-kpi-icon{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;font-size:20px;background:var(--plant-tint,#e6f5e9);color:var(--plant-color,#207b45)}
+.plant-kpi-name{font-size:13px;font-weight:800;color:#244734}
+.plant-kpi-capacity{font-size:11px;color:#7a8e80;margin-top:2px}
+.plant-kpi-value{font-size:clamp(22px,2.2vw,31px);font-weight:850;letter-spacing:-.7px;color:var(--plant-color,#207b45);margin:17px 0 5px;position:relative;z-index:1;animation:riseIn .55s ease both}
+.plant-kpi-unit{font-size:12px;font-weight:700;color:#74877a}
+.plant-kpi-foot{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:11px;color:#718477;position:relative;z-index:1}
+.plant-share{font-weight:800;padding:5px 8px;border-radius:999px;background:var(--plant-tint,#e6f5e9);color:var(--plant-color,#207b45);white-space:nowrap}
+.plant-progress{height:6px;border-radius:99px;background:#edf2ee;margin-top:13px;overflow:hidden;position:relative;z-index:1}
+.plant-progress span{display:block;height:100%;width:0;border-radius:99px;background:var(--plant-color,#207b45);animation:growBar .9s cubic-bezier(.2,.75,.25,1) forwards}
+.plant-chart-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:0 0 18px}
+.plant-chart-card{min-width:0;border:1px solid #e2ece5;transition:transform .25s ease,box-shadow .25s ease}
+.plant-chart-card:hover{transform:translateY(-3px);box-shadow:0 14px 28px #103b2112}
+.plant-chart-title{display:flex;align-items:center;gap:10px;margin:0 0 8px}
+.plant-chart-title h4{font-size:14px;text-transform:none;letter-spacing:0;color:#234833;margin:0 0 3px}
+.plant-chart-title small{font-size:11px;color:#7b8e81}
+.plant-dot{width:11px;height:34px;border-radius:99px;flex:0 0 auto}
+.auditorium-dot{background:#2e9e5b}.south-dot{background:#f2b705}.admin-dot{background:#0f6fb4}
+.plant-chart-card .ch{height:230px}
+@keyframes growBar{to{width:var(--bar-width,100%)}}
+@keyframes riseIn{from{opacity:.25;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.plant-chart-grid{grid-template-columns:1fr 1fr}.plant-chart-card:last-child{grid-column:1/-1}.plant-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){
+ .period-panel{padding:15px 13px;border-radius:18px;margin-bottom:21px}
+ .period-panel:after{right:-3px;top:-15px;font-size:85px}
+ .period-label{margin-bottom:10px}.period-label small{max-width:255px;line-height:1.4}
+ .period-tabs{gap:6px;margin-right:-3px;padding-bottom:10px}
+ .period-tab{padding:10px 13px;min-height:41px;font-size:12px}
+ .period-status{font-size:11px;gap:7px}.period-hint{width:100%;margin-left:15px}
+ .custom-range{display:grid;grid-template-columns:1fr 1fr}.custom-range label{display:block}.custom-range input{display:block;width:100%;margin-top:5px}
+ .plant-kpi-grid{grid-template-columns:1fr 1fr;gap:9px}
+ .plant-kpi{padding:12px}
+ .plant-kpi-icon{width:32px;height:32px;border-radius:10px;font-size:17px}
+ .plant-kpi-name{font-size:11px}.plant-kpi-capacity{font-size:10px}
+ .plant-kpi-value{font-size:clamp(17px,5vw,23px);margin:14px 0 5px}
+ .plant-kpi-foot{font-size:10px;align-items:flex-start;flex-direction:column;gap:5px}
+ .plant-chart-grid{grid-template-columns:1fr;gap:10px}
+ .plant-chart-card:last-child{grid-column:auto}
+ .plant-chart-card .ch{height:220px}
+}
+
 </style></head><body>
 <header class="site-header">
   <div class="brand">
@@ -143,11 +211,38 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
 </section>
 <div id="demo" class="banner hide">DEMO DATA — illustrative values only, not actual production. Set CFG.API_URL to use the live Google Sheet.</div>
 <div id="msg"></div>
-<div class="bar"><b>Period:</b><select id="rng"><option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option><option value="m">This month</option><option value="lm">Last month</option><option value="y">This year</option><option value="all">All available records</option><option value="c">Custom range</option></select>
-<span id="cu" class="hide"><input type="date" id="f"> to <input type="date" id="t"></span></div>
+<div class="period-panel">
+  <div class="period-label"><span class="period-sun">☀</span><div><b>Explore production</b><small>Choose a period to update every chart and block summary</small></div></div>
+  <div class="period-controls">
+    <div class="period-tabs" id="periodTabs" role="tablist" aria-label="Production period">
+      <button type="button" class="period-tab" data-range="7" role="tab">7 Days</button>
+      <button type="button" class="period-tab active" data-range="30" role="tab" aria-selected="true">30 Days</button>
+      <button type="button" class="period-tab" data-range="m" role="tab">This Month</button>
+      <button type="button" class="period-tab" data-range="lm" role="tab">Last Month</button>
+      <button type="button" class="period-tab" data-range="y" role="tab">This Year</button>
+      <button type="button" class="period-tab" data-range="all" role="tab">All Time</button>
+      <button type="button" class="period-tab" data-range="c" role="tab">Custom</button>
+    </div>
+    <select id="rng" class="sr-only" aria-hidden="true" tabindex="-1">
+      <option value="7">Last 7 days</option><option value="30" selected>Last 30 days</option>
+      <option value="m">This month</option><option value="lm">Last month</option>
+      <option value="y">This year</option><option value="all">All available records</option>
+      <option value="c">Custom range</option>
+    </select>
+    <span id="cu" class="custom-range hide"><label>From <input type="date" id="f"></label><label>To <input type="date" id="t"></label></span>
+  </div>
+  <div class="period-status"><span class="live-dot"></span><span id="periodCaption">Showing the last 30 days</span><span class="period-hint">All values update from available records</span></div>
+</div>
 
 <section id="ov"><div class="section-heading"><div><span class="eyebrow">CAMPUS AT A GLANCE</span><h2>Solar production overview</h2><p>Track generation across all three installations.</p></div><span class="section-icon">↗</span></div><div class="big">TOTAL SOLAR ENERGY GENERATED (available records)<b id="life"></b><small id="since"></small></div>
 <div class="grid" id="kpi"></div>
+<div class="section-heading plant-heading"><div><span class="eyebrow">BLOCK-WISE BREAKDOWN</span><h2>Where is the energy coming from?</h2><p>Compare production from each building for the selected period.</p></div><span class="section-icon">▥</span></div>
+<div class="grid plant-kpi-grid" id="plantKpi"></div>
+<div class="plant-chart-grid">
+  <div class="card plant-chart-card"><div class="plant-chart-title"><span class="plant-dot auditorium-dot"></span><div><h4>Auditorium</h4><small>100 kWp · Meter Mf-40</small></div></div><div class="ch"><canvas id="c5"></canvas></div></div>
+  <div class="card plant-chart-card"><div class="plant-chart-title"><span class="plant-dot south-dot"></span><div><h4>South Block</h4><small>15 kWp · Meter ID configurable</small></div></div><div class="ch"><canvas id="c6"></canvas></div></div>
+  <div class="card plant-chart-card"><div class="plant-chart-title"><span class="plant-dot admin-dot"></span><div><h4>Administration Block</h4><small>120 kWp · Meter Mf-50</small></div></div><div class="ch"><canvas id="c7"></canvas></div></div>
+</div>
 <div class="two"><div class="card"><h4>Daily Solar Production (kWh)</h4><div class="ch"><canvas id="c1"></canvas></div></div>
 <div class="card"><h4>Production Distribution (selected period)</h4><div class="ch"><canvas id="c2"></canvas></div></div></div></section>
 
@@ -222,10 +317,37 @@ function draw(){
   card("Installed Capacity",P.reduce((x,p)=>x+p.kwp,0)+" kWp",P.map(p=>p.n.split(" ")[0]+" "+p.kwp).join(" • ")),
   card("Selected Period",fmt(sum(sel))+" kWh",a+" → "+b),
   card("CO₂ Avoided (est.)",CFG.CO2_KG_PER_KWH?fmt(life*CFG.CO2_KG_PER_KWH/1000)+" t":"Factor not set","Estimate from configurable factor")].join("");
- // charts
- const labels=sel.map(r=>r.d),col=["#2e9e5b","#f2b705","#0f6fb4"];
+ const col=["#2e9e5b","#f2b705","#0f6fb4"];
+ const selectedTotal=sum(sel);
+ $("plantKpi").innerHTML=P.map((p,i)=>{
+   const val=sum(sel,p.k),count=sel.filter(r=>r[p.k]!=null).length;
+   const share=selectedTotal>0?val/selectedTotal*100:0;
+   const tint=["#e5f6eb","#fff4d4","#e5f1fc"][i];
+   const symbol=["▤","☀","▥"][i];
+   return `<div class="card plant-kpi" style="--plant-color:${col[i]};--plant-tint:${tint}">
+     <div class="plant-kpi-head"><span class="plant-kpi-icon">${symbol}</span><div><div class="plant-kpi-name">${p.n}</div><div class="plant-kpi-capacity">${p.kwp} kWp installed capacity</div></div></div>
+     <div class="plant-kpi-value" data-count="${val}">${fmt(val)} <span class="plant-kpi-unit">kWh</span></div>
+     <div class="plant-kpi-foot"><span>${count} recorded day${count===1?"":"s"} in this period</span><span class="plant-share">${fmt(share)}% of total</span></div>
+     <div class="plant-progress"><span style="--bar-width:${Math.max(0,Math.min(100,share))}%"></span></div>
+   </div>`;
+ }).join("");
+ // charts: overall trend, installation share, monthly comparison and dedicated trend per block
+ const labels=sel.map(r=>r.d);
  mk("c1","line",labels,[...P.map((p,i)=>({label:p.n,data:sel.map(r=>r[p.k]??null),borderColor:col[i],backgroundColor:col[i],tension:.25,pointRadius:1,spanGaps:false})),{label:"Total",data:sel.map(r=>has(r)?tot(r):null),borderColor:"#0f2744",borderDash:[5,4],pointRadius:0}]);
- mk("c2","doughnut",P.map(p=>p.n),[{data:P.map(p=>sum(sel,p.k)),backgroundColor:col}]);
+ mk("c2","doughnut",P.map(p=>p.n),[{data:P.map(p=>sum(sel,p.k)),backgroundColor:col,borderWidth:3,borderColor:"#ffffff"}]);
+ P.forEach((p,i)=>mk("c"+(5+i),"line",labels,[{
+   label:p.n+" (kWh)",
+   data:sel.map(r=>r[p.k]??null),
+   borderColor:col[i],
+   backgroundColor:col[i]+"28",
+   fill:true,
+   tension:.38,
+   borderWidth:3,
+   pointRadius:sel.length>25?0:2,
+   pointHoverRadius:5,
+   pointBackgroundColor:col[i],
+   spanGaps:false
+ }]));
  const yr0=a.slice(0,4),mn=[...Array(12)].map((_,i)=>yr0+"-"+String(i+1).padStart(2,"0"));
  mk("c3","bar",["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],P.map((p,i)=>({label:p.n,backgroundColor:col[i],data:mn.map(m=>sum(rows.filter(r=>r.d.startsWith(m)),p.k)||null)})));
  let c=0;mk("c4","line",labels,[{label:"Cumulative kWh",fill:true,borderColor:"#2e9e5b",backgroundColor:"#2e9e5b44",pointRadius:0,data:sel.map(r=>(c+=tot(r)))}]);
@@ -237,13 +359,31 @@ function draw(){
  $("envk").innerHTML=E.map(([n,k])=>card(n+" — Energy",en(k),"CO₂ avoided (est.): "+(CFG.CO2_KG_PER_KWH?fmt(k*CFG.CO2_KG_PER_KWH)+" kg":"factor not set")+"<br>Coal equivalent: "+e(CFG.COAL_KG_PER_KWH&&k*CFG.COAL_KG_PER_KWH)+"<br>Tree equivalent: "+e(CFG.KG_CO2_PER_TREE_YEAR&&CFG.CO2_KG_PER_KWH&&k*CFG.CO2_KG_PER_KWH/CFG.KG_CO2_PER_TREE_YEAR)+"<br>Homes powered: "+e(CFG.KWH_PER_HOME_YEAR&&k/CFG.KWH_PER_HOME_YEAR))).join("");
  table()}
 function mk(id,type,labels,datasets){charts[id]&&charts[id].destroy();
- charts[id]=new Chart($(id),{type,data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom"}},scales:type=="doughnut"?{}:{y:{title:{display:true,text:"kWh"},beginAtZero:true}}}})}
+ charts[id]=new Chart($(id),{type,data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,animation:{duration:850,easing:"easeOutQuart"},interaction:{mode:"index",intersect:false},plugins:{legend:{position:"bottom",labels:{usePointStyle:true,boxWidth:8,padding:16}},tooltip:{padding:12,cornerRadius:10,displayColors:true}},scales:type=="doughnut"?{}:{x:{grid:{display:false},ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:8}},y:{title:{display:true,text:"kWh"},beginAtZero:true,grid:{color:"rgba(100,130,110,.13)"},ticks:{precision:0}}}}})}
 function table(){const q=$("q").value.trim();const rs=rows.filter(r=>r.d.includes(q)).reverse().slice(0,400);
  $("tb").innerHTML=rs.map(r=>`<tr><td data-label="Date">${r.d}</td>${P.map(p=>`<td data-label="${p.n}">${r[p.k]==null?"<i>missing</i>":fmt(r[p.k])}</td>`).join("")}<td data-label="Total (kWh)"><b>${has(r)?fmt(tot(r)):"—"}</b></td></tr>`).join("")}
 $("q").oninput=table;
 $("csv").onclick=()=>{const t="Date,Auditorium,South Block,Administration Block,Total\n"+rows.map(r=>[r.d,...P.map(p=>r[p.k]??""),has(r)?tot(r):""].join(",")).join("\n");
  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/csv"}));a.download="solar_daily_production.csv";a.click()};
-$("rng").onchange=()=>{$("cu").classList.toggle("hide",$("rng").value!="c");draw()};$("f").onchange=$("t").onchange=draw;
+function updatePeriodTabs(){
+ const v=$("rng").value;
+ document.querySelectorAll(".period-tab").forEach(btn=>{
+   const active=btn.dataset.range===v;
+   btn.classList.toggle("active",active);
+   btn.setAttribute("aria-selected",active?"true":"false");
+ });
+ const labels={"7":"Showing the last 7 days","30":"Showing the last 30 days","m":"Showing this month","lm":"Showing last month","y":"Showing this year","all":"Showing all available records","c":"Showing custom date range"};
+ $("periodCaption").textContent=labels[v]||"Selected period";
+ $("cu").classList.toggle("hide",v!=="c");
+}
+document.querySelectorAll(".period-tab").forEach(btn=>btn.addEventListener("click",()=>{
+ $("rng").value=btn.dataset.range;
+ updatePeriodTabs();
+ draw();
+}));
+$("rng").onchange=()=>{updatePeriodTabs();draw()};
+$("f").onchange=$("t").onchange=draw;
+updatePeriodTabs();
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x==b));
  ["ov","an","en","hi","ad"].forEach(s=>$(s).classList.toggle("hide",s!=b.dataset.t));window.scrollTo(0,0);draw()});
 

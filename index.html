@@ -1,34 +1,50 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#14532d">
 <title>Vidya Solar Energy Monitoring Dashboard</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-:root{--bg:#f5f8f4;--card:#fff;--ink:#0f2744;--mut:#5b6b7f;--g:#2e9e5b;--y:#f2b705;--line:#e2e8e0}
-@media(prefers-color-scheme:dark){:root{--bg:#0d1a14;--card:#14261d;--ink:#e8f1ea;--mut:#9ab0a2;--line:#24392e}}
-*{box-sizing:border-box}body{margin:0;font:15px system-ui,sans-serif;background:var(--bg);color:var(--ink)}
-header{background:linear-gradient(120deg,#14532d,#2e9e5b);color:#fff;padding:22px 16px;text-align:center}
-header h1{margin:0;font-size:clamp(20px,4vw,32px)}header p{margin:4px 0;opacity:.9}
-nav{display:flex;gap:6px;justify-content:center;padding:10px;flex-wrap:wrap;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
-nav button,.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 14px;border-radius:999px;cursor:pointer;font:inherit}
-nav button.on,.btn.p{background:var(--g);color:#fff;border-color:var(--g)}
-main{max-width:1150px;margin:auto;padding:14px}
-.banner{background:#fff3c4;color:#5a4500;padding:8px 12px;border-radius:10px;margin-bottom:12px;font-weight:600}
-.big{text-align:center;background:var(--card);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 2px 10px #0001;border-top:4px solid var(--y)}
-.big b{display:block;font-size:clamp(30px,7vw,52px);color:var(--g)}
+:root{--bg:#eef4ee;--card:#fff;--ink:#0f2744;--mut:#5b6b7f;--g:#2e9e5b;--y:#f2b705;--line:#e2e8e0;--sh:0 4px 14px #0f274414}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1711;--card:#14261d;--ink:#e8f1ea;--mut:#9ab0a2;--line:#24392e;--sh:0 4px 14px #0006}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font:16px/1.4 system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+header{background:linear-gradient(135deg,#14532d,#2e9e5b 70%,#8bc34a);color:#fff;padding:calc(16px + env(safe-area-inset-top)) 16px 22px;text-align:center;border-radius:0 0 26px 26px}
+header h1{margin:0;font-size:clamp(17px,5vw,30px);letter-spacing:.3px}header p{margin:3px 0;opacity:.92;font-size:13px}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:560px;z-index:9;display:grid;grid-template-columns:repeat(5,1fr);background:var(--card);box-shadow:0 -6px 20px #0002;border-radius:22px 22px 0 0;padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+nav button{border:0;background:none;color:var(--mut);font:600 11px system-ui;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:14px;min-height:54px;cursor:pointer}
+nav button i{font-style:normal;font-size:21px}nav button.on{color:var(--g);background:#2e9e5b1c}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:12px 18px;border-radius:14px;cursor:pointer;font:600 15px system-ui;min-height:48px}
+.btn.p{background:var(--g);color:#fff;border-color:var(--g)}.btn:active{transform:scale(.97)}
+main{max-width:1100px;margin:auto;padding:14px}
+.banner{background:#fff3c4;color:#5a4500;padding:10px 12px;border-radius:12px;margin-bottom:12px;font-weight:600;font-size:13px}
+.big{text-align:center;background:var(--card);border-radius:20px;padding:18px 12px;margin-bottom:14px;box-shadow:var(--sh);border-top:5px solid var(--y);font-size:12px;color:var(--mut);letter-spacing:.6px}
+.big b{display:block;font-size:clamp(34px,10vw,56px);color:var(--g);letter-spacing:0;line-height:1.1;margin-top:4px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-bottom:14px}
-.card{background:var(--card);border-radius:14px;padding:14px;box-shadow:0 2px 10px #0001}
-.card h4{margin:0 0 6px;color:var(--mut);font-size:13px;font-weight:600}.card .v{font-size:24px;font-weight:700}.card small{color:var(--mut);display:block;margin-top:4px}
+.card{background:var(--card);border-radius:18px;padding:14px;box-shadow:var(--sh)}
+.card h4{margin:0 0 6px;color:var(--mut);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}.card .v{font-size:24px;font-weight:800}.card small{color:var(--mut);display:block;margin-top:4px;font-size:12px}
 .ch{height:300px;position:relative}.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;margin-bottom:14px}
 .bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
-select,input,textarea{padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit;max-width:100%}
-table{width:100%;border-collapse:collapse}th,td{padding:7px;text-align:right;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}
-.sc{overflow-x:auto}.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}.f label{display:flex;flex-direction:column;font-size:13px;color:var(--mut);gap:3px}
-.err{color:#c0392b}.ok{color:var(--g)}footer{text-align:center;padding:24px;color:var(--mut)}.hide{display:none}
-</style></head><body>
+select,input,textarea{padding:12px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:16px system-ui;min-height:48px;max-width:100%}
+input:focus,select:focus{outline:2px solid var(--g);border-color:var(--g)}
+table{width:100%;border-collapse:collapse}th,td{padding:8px;text-align:right;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}
+.sc{overflow-x:auto}.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.f label{display:flex;flex-direction:column;font-size:12px;color:var(--mut);gap:4px;font-weight:600}
+.f input{width:100%}.err{color:#c0392b;font-weight:600}.ok{color:var(--g);font-weight:600}footer{text-align:center;padding:20px;color:var(--mut);font-size:13px}.hide{display:none}
+.chips{display:flex;gap:8px;margin:10px 0}.chips .btn{padding:8px 14px;min-height:40px;font-size:14px}
+.pl{border-left:6px solid var(--g);margin:12px 0}.pl h4{text-transform:none;font-size:16px;color:var(--ink);margin-bottom:2px}
+.pl .big-in{font-size:24px;font-weight:800;text-align:center;border-color:var(--g)}.pl input[readonly]{background:#0000000a;color:var(--mut)}
+.pill{display:inline-block;background:#2e9e5b1f;color:var(--g);padding:10px 12px;border-radius:12px;font-weight:800;font-size:18px;text-align:center}
+.stick{position:sticky;bottom:calc(72px + env(safe-area-inset-bottom));background:var(--card);padding:10px;border-radius:16px;box-shadow:0 -4px 18px #0003;display:flex;gap:8px;align-items:center;margin-top:12px}.stick .p{flex:1}
+#res{font-weight:600;line-height:1.6}
+@media(max-width:700px){
+ main{padding:12px}.two{grid-template-columns:1fr}.ch{height:240px}
+ #kpi,#stat,#envk{grid-template-columns:1fr 1fr;gap:10px}#kpi .card:first-child,#kpi .card:nth-child(2){grid-column:1/-1}
+ .card .v{font-size:19px}.bar select,.bar input{flex:1;min-width:130px}
+ thead{display:none}tr{display:block;padding:10px 12px;border-bottom:1px solid var(--line)}
+ td{display:flex;justify-content:space-between;border:0;padding:3px 0}td:before{content:attr(data-label);color:var(--mut)}td:first-child{font-weight:800}}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.seg .btn{padding:10px 4px;line-height:1.25;font-size:14px}.seg small{font-weight:500;opacity:.9}</style></head><body>
 <header><h1>VIDYA SOLAR ENERGY MONITORING DASHBOARD</h1><p>Smart Energy. Sustainable Campus. Greener Future.</p>
 <p><b>Vidya Academy of Science and Technology, Thrissur, Kerala</b></p><p id="upd" style="font-size:13px"></p></header>
-<nav><button class="on" data-t="ov">Overview</button><button data-t="an">Analytics</button><button data-t="en">Environmental Impact</button><button data-t="hi">Historical Data</button><button data-t="ad">Administrator</button></nav>
+<nav><button class="on" data-t="ov"><i>☀️</i>Overview</button><button data-t="an"><i>📈</i>Analytics</button><button data-t="en"><i>🌱</i>Impact</button><button data-t="hi"><i>🗂️</i>Data</button><button data-t="ad"><i>✍️</i>Admin</button></nav>
 <main>
 <div id="demo" class="banner hide">DEMO DATA — illustrative values only, not actual production. Set CFG.API_URL to use the live Google Sheet.</div>
 <div id="msg"></div>
@@ -52,13 +68,13 @@ table{width:100%;border-collapse:collapse}th,td{padding:7px;text-align:right;bor
 
 <section id="ad" class="hide"><div class="card"><div id="login"><p>Administrator login (verified on the backend).</p><div class="f"><label>Username<input id="lu" autocomplete="username"></label><label>Password<input id="lp" type="password" autocomplete="current-password"></label></div><p><button class="btn p" id="lb">Log in</button> <span id="le" class="err"></span></p><button class="btn hide" id="nog">Demo: continue without sign-in</button></div>
 <div id="form" class="hide"><h3>Daily Solar Production Entry</h3><p id="who"></p>
-<div class="f"><label>Production date<input type="date" id="d"></label><label>Reading time<input type="time" id="rt" value="09:40"></label><label>Remarks<input id="rm"></label></div>
-<div id="plants"></div><h4>Total daily production: <span id="tot">—</span></h4><button class="btn p" id="sub">Submit Daily Readings</button> <button class="btn" id="clr">Clear Form</button><p id="res"></p></div></div></section>
+<div class="f"><label>Production date<input type="date" id="d"></label><label>Reading time<input type="time" id="rt" value="09:40"></label></div><div class="chips"><button class="btn" id="dt">Today</button><button class="btn" id="dy">Yesterday</button></div><label style="display:flex;flex-direction:column;font-size:12px;color:var(--mut);font-weight:600;gap:4px">Remarks (optional)<input id="rm"></label>
+<p style="margin:12px 0 0;color:var(--mut);font-size:13px">Choose the building you are at. Submit it, then switch to the next one later.</p><div class="seg" id="seg"></div><div id="plants"></div><p id="res"></p><div class="stick"><button class="btn p" id="sub">Submit Daily Readings</button><button class="btn" id="clr">Clear</button></div></div></div></section>
 </main>
 <footer><b>Vidya Academy of Science and Technology</b><br>Thalakottukara P.O., Kecheri, Thrissur, Kerala, India.<br><i>"Harnessing the Power of the Sun for a Sustainable Future."</i></footer>
 <script>
 const CFG={
- API_URL:"https://script.google.com/macros/s/AKfycbyY3KKc8P0md7dvKL6pHVJsFgfgtixX4Frg8wIClthSDIg4YHUpz2ZcE1ekAVRvzRxw/exec",            // Apps Script web-app URL (…/exec). Empty = demo mode.
+ API_URL:"",            // Apps Script web-app URL (…/exec). Empty = demo mode.
   // Conversion factors: set and document source/version before public use.
  CO2_KG_PER_KWH:0.71,   // PLACEHOLDER: replace with current CEA grid factor, record source/version
  COAL_KG_PER_KWH:null,  // e.g. documented coal displacement factor
@@ -128,37 +144,42 @@ function draw(){
 function mk(id,type,labels,datasets){charts[id]&&charts[id].destroy();
  charts[id]=new Chart($(id),{type,data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"bottom"}},scales:type=="doughnut"?{}:{y:{title:{display:true,text:"kWh"},beginAtZero:true}}}})}
 function table(){const q=$("q").value.trim();const rs=rows.filter(r=>r.d.includes(q)).reverse().slice(0,400);
- $("tb").innerHTML=rs.map(r=>`<tr><td>${r.d}</td>${P.map(p=>`<td>${r[p.k]==null?"<i>missing</i>":fmt(r[p.k])}</td>`).join("")}<td><b>${has(r)?fmt(tot(r)):"—"}</b></td></tr>`).join("")}
+ $("tb").innerHTML=rs.map(r=>`<tr><td data-label="Date">${r.d}</td>${P.map(p=>`<td data-label="${p.n}">${r[p.k]==null?"<i>missing</i>":fmt(r[p.k])}</td>`).join("")}<td data-label="Total (kWh)"><b>${has(r)?fmt(tot(r)):"—"}</b></td></tr>`).join("")}
 $("q").oninput=table;
 $("csv").onclick=()=>{const t="Date,Auditorium,South Block,Administration Block,Total\n"+rows.map(r=>[r.d,...P.map(p=>r[p.k]??""),has(r)?tot(r):""].join(",")).join("\n");
  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/csv"}));a.download="solar_daily_production.csv";a.click()};
 $("rng").onchange=()=>{$("cu").classList.toggle("hide",$("rng").value!="c");draw()};$("f").onchange=$("t").onchange=draw;
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x==b));
- ["ov","an","en","hi","ad"].forEach(s=>$(s).classList.toggle("hide",s!=b.dataset.t));draw()});
+ ["ov","an","en","hi","ad"].forEach(s=>$(s).classList.toggle("hide",s!=b.dataset.t));window.scrollTo(0,0);draw()});
 
 // ---- Admin entry ----
-function buildForm(){$("plants").innerHTML=P.map(p=>`<div class="card" style="margin:10px 0"><h4>${p.n} — ${p.kwp} kWp — Meter ${p.meter}</h4><div class="f"><label>Previous reading (kWh)<input id="p_${p.k}" readonly></label><label>Current cumulative reading (kWh)<input id="c_${p.k}" type="number" min="0" step="any"></label><label>Daily production<b id="o_${p.k}">—</b></label></div></div>`).join("");
- $("d").value=today;P.forEach(p=>$("c_"+p.k).oninput=calc);$("d").onchange=prev;prev()}
-function prev(){const d=$("d").value;P.forEach(p=>{const r=rows.filter(r=>r.d<d&&r[p.k+"c"]!=null).slice(-1)[0];$("p_"+p.k).value=r?r[p.k+"c"]:"";});calc()}
-function calc(){let t=0,n=0;P.forEach(p=>{const a=parseFloat($("p_"+p.k).value),c=parseFloat($("c_"+p.k).value);
- if(!isNaN(a)&&!isNaN(c)&&c>=a){$("o_"+p.k).textContent=fmt(c-a)+" kWh";t+=c-a;n++}else $("o_"+p.k).textContent=isNaN(c)?"—":isNaN(a)?"No baseline":"Invalid (current < previous)"});
- $("tot").textContent=n?fmt(t)+" kWh":"—"}
-$("clr").onclick=()=>{P.forEach(p=>$("c_"+p.k).value="");$("rm").value="";calc()};
-$("sub").onclick=async()=>{const rec={date:$("d").value,time:$("rt").value,remarks:$("rm").value,readings:{}};
- for(const p of P){const c=$("c_"+p.k).value;if(c==="")continue;const v=+c,a=parseFloat($("p_"+p.k).value);
-  if(!(v>=0)||(!isNaN(a)&&v<a)){$("res").innerHTML='<span class="err">Invalid reading for '+p.n+'.</span>';return}rec.readings[p.k]=v}
- if(!Object.keys(rec.readings).length){$("res").innerHTML='<span class="err">Enter at least one reading (blank = missing, not zero).</span>';return}
+function buildForm(){$("d").value=today;$("dt").onclick=()=>{$("d").value=today;prev()};$("dy").onclick=()=>{$("d").value=addD(today,-1);prev()};$("d").onchange=prev;pick(sel)}
+let sel="a";
+function seg(){const d=$("d").value;$("seg").innerHTML=P.map(p=>{const r=rows.find(r=>r.d==d),done=r&&r[p.k+"c"]!=null;return`<button class="btn ${p.k==sel?"p":""}" data-k="${p.k}">${p.n.split(" ")[0]}<br><small>${done?"✓ Done":"Pending"}</small></button>`}).join("");
+ $("seg").querySelectorAll("button").forEach(b=>b.onclick=()=>{$("res").textContent="";pick(b.dataset.k)})}
+function pick(k){sel=k;const p=P.find(x=>x.k==k);
+ $("plants").innerHTML=`<div class="card pl"><h4>${p.n}</h4><small>${p.kwp} kWp • Meter ${p.meter}</small><div class="f" style="margin-top:10px"><label>Previous reading (kWh)<input id="p_in" readonly></label><label>Current reading (kWh)<input class="big-in" id="c_in" type="number" inputmode="decimal" min="0" step="any" placeholder="0"></label></div><p style="margin:10px 0 0">Daily production: <span class="pill" id="o_in">—</span></p><p id="ex" style="margin:8px 0 0"></p></div>`;
+ $("c_in").oninput=calc;prev()}
+function prev(){const d=$("d").value,k=sel,r=rows.filter(r=>r.d<d&&r[k+"c"]!=null).slice(-1)[0];$("p_in").value=r?r[k+"c"]:"";
+ const ex=rows.find(r=>r.d==d&&r[k+"c"]!=null);$("ex").innerHTML=ex?'<span class="err">Already entered for this date ('+fmt(ex[k+"c"])+' kWh). Use the correction procedure to change it.</span>':"";seg();calc()}
+function calc(){const a=parseFloat($("p_in").value),c=parseFloat($("c_in").value);
+ $("o_in").textContent=isNaN(c)?"—":isNaN(a)?"No baseline (first reading)":c>=a?fmt(c-a)+" kWh":"Invalid (current < previous)"}
+$("clr").onclick=()=>{$("c_in").value="";$("rm").value="";calc()};
+$("sub").onclick=async()=>{const p=P.find(x=>x.k==sel),c=$("c_in").value,v=+c,a=parseFloat($("p_in").value);
+ if(c===""||!(v>=0)||(!isNaN(a)&&v<a)){$("res").innerHTML='<span class="err">Enter a valid reading for '+p.n+'.</span>';return}
+ const rec={date:$("d").value,time:$("rt").value,remarks:$("rm").value,plant:sel,reading:v};
  if(demo){$("res").innerHTML='<span class="err">Demo mode: nothing was saved.</span>';return}
  $("res").textContent="Saving…";
  try{const r=await fetch(CFG.API_URL,{method:"POST",body:JSON.stringify({user,pass,record:rec})});const j=await r.json();
-  if(j.ok){$("res").innerHTML='<span class="ok">Solar production readings have been saved successfully.</span> '+Object.entries(j.daily).map(([k,v])=>k+": "+fmt(v)+" kWh").join(" • ")+" • Total "+fmt(j.total)+" kWh";load().then(prev)}
+  if(j.ok){$("res").innerHTML='<span class="ok">Solar production readings have been saved successfully.</span><br>'+p.n+": "+(j.daily==null?"first reading saved (baseline)":fmt(j.daily)+" kWh")+"<br>Total so far for this date: "+fmt(j.total)+" kWh";
+   $("rm").value="";load().then(()=>{const d=$("d").value,n=P.find(q=>!rows.find(r=>r.d==d&&r[q.k+"c"]!=null));n?pick(n.k):prev()})}
   else $("res").innerHTML='<span class="err">'+j.error+'</span>'}catch(e){$("res").innerHTML='<span class="err">Network error. Please retry.</span>'}};
 function enter(n){$("login").classList.add("hide");$("form").classList.remove("hide");$("who").textContent="Entered by: "+n;buildForm()}
 $("lb").onclick=async()=>{const u=$("lu").value.trim(),p=$("lp").value;$("le").textContent="";
  if(!CFG.API_URL){$("le").textContent="Demo mode: no backend configured.";return}
  try{const r=await fetch(CFG.API_URL,{method:"POST",body:JSON.stringify({action:"login",user:u,pass:p})});const j=await r.json();
-  if(j.ok){user=u;pass=p;$("lp").value="";enter(u)}else $("le").textContent=j.error}catch(e){$("le").textContent="Network error."}};
+  if(j.ok){try{localStorage.setItem("su",u)}catch(e){}user=u;pass=p;$("lp").value="";enter(u)}else $("le").textContent=j.error}catch(e){$("le").textContent="Network error."}};
 $("lp").onkeydown=e=>{if(e.key=="Enter")$("lb").click()};
 $("nog").onclick=()=>enter("demo user");
-window.onload=load;
+window.onload=()=>{try{$("lu").value=localStorage.getItem("su")||""}catch(e){}load()};
 </script></body></html>

@@ -632,6 +632,23 @@ makeTabs("dayTabs",Array.from({length:days},(_,i)=>({label:String(i+1),value:day
   }
  });
 }
+function syncAnalyticsPeriodControls_(){
+ const pairs=[['dayYearTabs','analytics_dayYearTabs'],['dayMonthTabs','analytics_dayMonthTabs'],['dayTabs','analytics_dayTabs'],['monthYearTabs','analytics_monthYearTabs'],['monthTabs','analytics_monthTabs'],['yearTabs','analytics_yearTabs']];
+ for(const [srcId,dstId] of pairs){
+  const src=document.getElementById(srcId),dst=document.getElementById(dstId); if(!src||!dst)continue;
+  dst.innerHTML='';
+  [...src.querySelectorAll('button')].forEach((button,index)=>{
+   const copy=button.cloneNode(true); copy.onclick=()=>{button.click(); setTimeout(syncAnalyticsPeriodControls_,0);};
+   dst.appendChild(copy);
+  });
+ }
+ const level=window.solarPeriodLevel||'all';
+ const vis={analytics_dayYearWrap:false,analytics_dayMonthWrap:false,analytics_dayTabsWrap:level==='day',analytics_monthYearWrap:false,analytics_monthTabsWrap:level==='month',analytics_yearTabsWrap:level==='year'};
+ for(const [id,show] of Object.entries(vis)){const el=document.getElementById(id);if(el)el.classList.toggle('hide',!show);}
+ document.querySelectorAll('#analytics_periodLevelTabs [data-level]').forEach(b=>{const a=b.dataset.level===level;b.classList.toggle('active',a);b.setAttribute('aria-selected',a?'true':'false');});
+ const cap=document.getElementById('analytics_periodCaption'); if(cap){const names=['January','February','March','April','May','June','July','August','September','October','November','December'];const m=Number(window.solarSelectedMonth.slice(5,7))-1;cap.textContent=level==='month'?`Showing production for ${names[m]} ${window.solarSelectedMonth.slice(0,4)}`:level==='day'?`Showing daily production for ${window.solarSelectedDate}`:level==='year'?(window.solarSelectedYear==='all'?'Comparing all available years':'Showing production for '+window.solarSelectedYear):'Showing all available records';}
+ const rng=document.getElementById('analytics_rng');if(rng)rng.value=level;
+}
 function updateSolarPeriodControls_(){
  const level=window.solarPeriodLevel||"all";
  document.querySelectorAll("[data-level]").forEach(b=>{const active=b.dataset.level===level;b.classList.toggle("active",active);b.setAttribute("aria-selected",active?"true":"false")});
@@ -646,6 +663,7 @@ function updateSolarPeriodControls_(){
  $("cu").classList.toggle("hide",level!=="all");
  const caps={all:"Choose a From and To date to filter production, or keep the full available range",day:"Select a date to view that day's production; the graph shows every date in the selected month",month:"Select a month; the graph compares January–December for the chosen year",year:window.solarSelectedYear!=="all"?"Showing production for "+window.solarSelectedYear:"Comparing annual production across all available years"};
  $("periodCaption").textContent=caps[level]||"Selected period";$("rng").value=level;
+ syncAnalyticsPeriodControls_();
 }
 window.solarPeriodLevel="all";window.solarSelectedYear="all";window.solarSelectedMonth=today.slice(0,7);window.solarSelectedDate=today;
 // Initialize the date-range inputs so From/To are visible and usable immediately.
@@ -714,11 +732,12 @@ window.onload=()=>{try{$("lu").value=localStorage.getItem("su")||""}catch(e){}lo
 document.getElementById("dayTabs")?.addEventListener("click",()=>setTimeout(updateDayMonthCaption,0));
 document.getElementById("dayMonthTabs")?.addEventListener("click",()=>setTimeout(updateDayMonthCaption,0));
 updateDayMonthCaption();
+syncAnalyticsPeriodControls_();
 
 // Plant-comparison month buttons are rendered by renderAnalyticsMonthComparison() on every data refresh.
 // Analytics-tab Explore Production controls mirror the main period selection.
 document.querySelectorAll('#analytics_periodLevelTabs [data-level]').forEach(b=>b.addEventListener('click',()=>{
- window.solarPeriodLevel=b.dataset.level; initSolarPeriodControls_(); updateSolarPeriodControls_();
+ window.solarPeriodLevel=b.dataset.level; initSolarPeriodControls_(); updateSolarPeriodControls_(); syncAnalyticsPeriodControls_();
  document.querySelectorAll('#analytics_periodLevelTabs [data-level]').forEach(x=>{const a=x.dataset.level===window.solarPeriodLevel;x.classList.toggle('active',a);x.setAttribute('aria-selected',a?'true':'false')}); draw();
 }));
 </script></body></html>

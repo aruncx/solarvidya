@@ -694,6 +694,28 @@ document.getElementById("dayTabs")?.addEventListener("click",()=>setTimeout(upda
 document.getElementById("dayMonthTabs")?.addEventListener("click",()=>setTimeout(updateDayMonthCaption,0));
 updateDayMonthCaption();
 
+// Analytics tab: render Jan–Dec month selectors and keep them linked to the selected year/month.
+(function initAnalyticsMonthSelectors(){
+ const host=document.getElementById("analytics_monthTabs");
+ if(!host) return;
+ const monthNames=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+ function render(){
+   const selected=(window.solarSelectedMonth||today.slice(0,7)).slice(5,7);
+   host.innerHTML=monthNames.map((m,i)=>`<button type="button" class="period-tab ${String(i+1).padStart(2,"0")===selected?"active":""}" data-month="${String(i+1).padStart(2,"0")}" role="tab" aria-selected="${String(i+1).padStart(2,"0")===selected?"true":"false"}">${m}</button>`).join("");
+ }
+ host.addEventListener("click",e=>{
+   const b=e.target.closest("button[data-month]"); if(!b)return;
+   const m=b.dataset.month,y=(window.solarSelectedMonth||today.slice(0,7)).slice(0,4);
+   window.solarSelectedMonth=y+"-"+m;
+   const day=Math.min(Number((window.solarSelectedDate||today).slice(8,10)),new Date(Number(y),Number(m),0).getDate());
+   window.solarSelectedDate=y+"-"+m+"-"+String(day).padStart(2,"0");
+   render(); initSolarPeriodControls_(); updateSolarPeriodControls_(); draw();
+ });
+ render();
+ // Refresh active month after other period controls change.
+ document.querySelectorAll('#analytics_periodLevelTabs [data-level]').forEach(b=>b.addEventListener('click',()=>setTimeout(render,0)));
+})();
+
 // Analytics-tab Explore Production controls mirror the main period selection.
 document.querySelectorAll('#analytics_periodLevelTabs [data-level]').forEach(b=>b.addEventListener('click',()=>{
  window.solarPeriodLevel=b.dataset.level; initSolarPeriodControls_(); updateSolarPeriodControls_();

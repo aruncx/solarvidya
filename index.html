@@ -301,7 +301,32 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
 <div class="two"><div class="card"><h4>Daily Solar Production (kWh)</h4><div class="ch"><canvas id="c1"></canvas></div></div>
 <div class="card"><h4>Production Distribution (selected period)</h4><div class="ch"><canvas id="c2"></canvas></div></div></div></section>
 
-<section id="an" class="hide"><div class="section-heading"><div><span class="eyebrow">TRENDS & INSIGHTS</span><h2>Production analytics</h2><p>Understand energy generation over time.</p></div><span class="section-icon">⌁</span></div><div class="two"><div class="card"><h4>Monthly Production (kWh)</h4><div class="ch"><canvas id="c3"></canvas></div></div>
+<section id="an" class="hide">
+<div class="period-panel">
+  <div class="period-label"><span class="period-sun">☀</span><div><b>Explore production</b><small>Choose All, daily dates, months, or years to explore solar generation</small></div></div>
+  <div class="period-controls">
+    <div class="period-tabs period-level-tabs" id="analytics_periodLevelTabs" role="tablist" aria-label="Production view">
+      <button type="button" class="period-tab active" data-level="all" role="tab" aria-selected="true">All</button>
+      <button type="button" class="period-tab" data-level="day" role="tab" aria-selected="false">Day</button>
+      <button type="button" class="period-tab" data-level="month" role="tab" aria-selected="false">Month</button>
+      <button type="button" class="period-tab" data-level="year" role="tab" aria-selected="false">Year</button>
+    </div>
+    <div class="period-subcontrols">
+      <div id="analytics_dayYearWrap" class="period-tab-row hide"><span class="period-row-label">Year</span><div id="analytics_dayYearTabs" class="period-tabs compact-tabs" aria-label="Daily view year"></div></div>
+      <div id="analytics_dayMonthWrap" class="period-tab-row hide"><span class="period-row-label">Month</span><div id="analytics_dayMonthTabs" class="period-tabs compact-tabs" aria-label="Daily view month"></div></div>
+      <div id="analytics_dayTabsWrap" class="period-tab-row hide"><span class="period-row-label">Date</span><div class="day-tab-content"><div id="analytics_dayMonthCaption" class="day-month-caption" aria-live="polite"></div><div id="analytics_dayTabs" class="period-tabs compact-tabs day-tabs" aria-label="Day of month"></div></div></div>
+      <div id="analytics_monthYearWrap" class="period-tab-row hide"><span class="period-row-label">Year</span><div id="analytics_monthYearTabs" class="period-tabs compact-tabs" aria-label="Monthly view year"></div></div>
+      <div id="analytics_monthTabsWrap" class="period-tab-row hide"><span class="period-row-label">Month</span><div id="analytics_monthTabs" class="period-tabs compact-tabs" aria-label="Month of year"></div></div>
+      <div id="analytics_yearTabsWrap" class="period-tab-row hide"><span class="period-row-label">Year</span><div id="analytics_yearTabs" class="period-tabs compact-tabs" aria-label="Year selection"></div></div>
+    </div>
+    <select id="analytics_rng" class="sr-only" aria-hidden="true" tabindex="-1">
+      <option value="all" selected>All</option><option value="day">Day</option><option value="month">Month</option><option value="year">Year</option>
+    </select>
+    <span id="analytics_cu" class="custom-range hide"><label>From <input type="date" id="analytics_f"></label><label>To <input type="date" id="analytics_t"></label></span>
+  </div>
+  <div class="period-status"><span class="live-dot"></span><span id="analytics_periodCaption">Showing all available records</span><span class="period-hint">Analytics charts use the selected production period</span></div>
+</div>
+<div class="section-heading"><div><span class="eyebrow">TRENDS & INSIGHTS</span><h2>Production analytics</h2><p>Understand energy generation over time.</p></div><span class="section-icon">⌁</span></div><div class="two"><div class="card"><h4>Monthly Production (kWh)</h4><div class="ch"><canvas id="c3"></canvas></div></div>
 <div class="card"><h4>Cumulative Production (kWh)</h4><div class="ch"><canvas id="c4"></canvas></div></div></div>
 <div class="grid" id="stat"></div></section>
 
@@ -387,7 +412,7 @@ function draw(){
    chartRows=[];
    for(let d=1;d<=new Date(yy,mm,0).getDate();d++){
      const key=yy+"-"+String(mm).padStart(2,"0")+"-"+String(d).padStart(2,"0"),r=map.get(key);
-     chartRows.push({d:key,label:String(d),a:r?r.a:null,s:r?r.s:null,m:r?r.m:null});
+     chartRows.push({d:key,label:new Date(yy,mm-1,d).toLocaleDateString("en-IN",{day:"numeric",month:"short"}),a:r?r.a:null,s:r?r.s:null,m:r?r.m:null});
    }
  }else if(level==="month"){
    const year=(window.solarSelectedMonth||today.slice(0,7)).slice(0,4);
@@ -447,24 +472,22 @@ function draw(){
  const labels=chartRows.map(r=>r.label||r.d);
  mk("c1","line",labels,[...P.map((p,i)=>({label:p.n,data:chartRows.map(r=>r[p.k]??null),borderColor:col[i],backgroundColor:col[i],tension:.25,pointRadius:1,spanGaps:false})),{label:"Total",data:chartRows.map(r=>((r.a!=null)||(r.s!=null)||(r.m!=null))?((r.a||0)+(r.s||0)+(r.m||0)):null),borderColor:"#0f2744",borderDash:[5,4],pointRadius:0}]);
  mk("c2","doughnut",P.map(p=>p.n),[{data:P.map(p=>sum(sel,p.k)),backgroundColor:col,borderWidth:3,borderColor:"#ffffff"}]);
- P.forEach((p,i)=>mk("c"+(5+i),"line",labels,[{
+ P.forEach((p,i)=>mk("c"+(5+i),"bar",labels,[{
    label:p.n+" (kWh)",
    data:chartRows.map(r=>r[p.k]??null),
    borderColor:col[i],
-   backgroundColor:col[i]+"28",
-   fill:true,
-   tension:.38,
-   borderWidth:3,
+   backgroundColor:col[i]+"B8",
+   borderWidth:1,
+   borderRadius:4,
    pointRadius:sel.length>25?0:2,
    pointHoverRadius:5,
    pointBackgroundColor:col[i],
    spanGaps:false
  }]));
- mk("c8","line",labels,[{
+ mk("c8","bar",labels,[{
    label:"Total campus production (kWh)",
    data:chartRows.map(r=>((r.a!=null)||(r.s!=null)||(r.m!=null))?((r.a||0)+(r.s||0)+(r.m||0)):null),
-   borderColor:"#183d2a",backgroundColor:"#183d2a25",fill:true,tension:.38,borderWidth:3,
-   pointRadius:chartRows.length>25?0:2,pointHoverRadius:5,spanGaps:false
+   borderColor:"#183d2a",backgroundColor:"#183d2aB8",borderWidth:1,borderRadius:4,spanGaps:false
  }]);
  const years=[...new Set(rows.map(r=>r.d.slice(0,4)))].sort();
  const yearlyCompare=level==="all"||(level==="year"&&window.solarSelectedYear==="all");
@@ -486,7 +509,7 @@ function draw(){
  metric("🏠","Household electricity equivalent",fmt(homes)+" homes/year","At an illustrative 1,200 kWh per household per year."),
  metric("⛽","Petrol CO₂ equivalent",fmt(petrol)+" litres","CO₂ equivalent based on 2.3 kg CO₂ per litre of petrol."),
  metric("🚗","Electric vehicle distance",fmt(evkm)+" km","At an illustrative EV consumption of 0.12 kWh/km."),
- metric("💧","Thermal-generation water equivalent",en(0)+"".replace(en(0),fmt(waterLow/1000)+"–"+fmt(waterHigh/1000))+" million litres","Indicative range of 3–4 litres per kWh; highly technology-dependent.")
+ metric("💧","Thermal-generation water equivalent",fmt(waterLow/1e6)+"–"+fmt(waterHigh/1e6)+" million litres","Indicative range of 3–4 litres per kWh; highly technology-dependent. This is not a measured campus water saving.")
  ].join("");
  $("sdgClimate").textContent=`Estimated avoided emissions: about ${fmt(co2kg/1000)} tonnes of CO₂ across all recorded solar generation.`;
  $("sdgWater").textContent=`Indicative thermal-generation water-use equivalent: ${fmt(waterLow/1e6)}–${fmt(waterHigh/1e6)} million litres. This is not a measured campus water saving.`;
@@ -536,11 +559,10 @@ function initSolarPeriodControls_(){
  });
  const dayMonth=window.solarSelectedDate.slice(0,7),[dy,dm]=dayMonth.split("-").map(Number),days=new Date(dy,dm,0).getDate();
  function updateDayMonthCaption(){
- const el=document.getElementById("dayMonthCaption");
- if(!el || !window.solarSelectedDate) return;
  const parts=window.solarSelectedDate.split("-");
  const d=new Date(Number(parts[0]),Number(parts[1])-1,1);
- el.textContent="Showing dates for "+d.toLocaleDateString("en-IN",{month:"long",year:"numeric"});
+ const caption="Showing dates for "+d.toLocaleDateString("en-IN",{month:"long",year:"numeric"});
+ ["dayMonthCaption","analytics_dayMonthCaption"].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=caption;});
 }
 makeTabs("dayTabs",Array.from({length:days},(_,i)=>({label:String(i+1),value:dayMonth+"-"+String(i+1).padStart(2,"0")})),()=>window.solarSelectedDate,d=>{window.solarSelectedDate=d;window.solarSelectedMonth=d.slice(0,7)});
  makeTabs("monthYearTabs",years.map(y=>({label:y,value:y})),()=>window.solarSelectedMonth.slice(0,4),y=>{window.solarSelectedMonth=y+"-"+window.solarSelectedMonth.slice(5,7)});
@@ -642,4 +664,10 @@ window.onload=()=>{try{$("lu").value=localStorage.getItem("su")||""}catch(e){}lo
 document.getElementById("dayTabs")?.addEventListener("click",()=>setTimeout(updateDayMonthCaption,0));
 document.getElementById("dayMonthTabs")?.addEventListener("click",()=>setTimeout(updateDayMonthCaption,0));
 updateDayMonthCaption();
+
+// Analytics-tab Explore Production controls mirror the main period selection.
+document.querySelectorAll('#analytics_periodLevelTabs [data-level]').forEach(b=>b.addEventListener('click',()=>{
+ window.solarPeriodLevel=b.dataset.level; initSolarPeriodControls_(); updateSolarPeriodControls_();
+ document.querySelectorAll('#analytics_periodLevelTabs [data-level]').forEach(x=>{const a=x.dataset.level===window.solarPeriodLevel;x.classList.toggle('active',a);x.setAttribute('aria-selected',a?'true':'false')}); draw();
+}));
 </script></body></html>

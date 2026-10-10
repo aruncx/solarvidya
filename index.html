@@ -334,8 +334,8 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
 <div class="grid" id="analyticsPeriodStats"></div>
 <div class="section-heading analytics-extra-heading"><div><span class="eyebrow">PLANT COMPARISON</span><h2>Compare solar installations</h2><p>Compare output fairly using each plant's installed capacity.</p></div><span class="section-icon">⚖</span></div>
 <div class="card" style="margin-bottom:14px"><h4>Monthly comparison</h4><p class="muted-note">Select a month to compare generation from each installation. All 12 months are available.</p><div id="analyticsPlantMonthTabs" class="period-tabs compact-tabs" aria-label="Month selection for plant comparison"></div><div id="analyticsMonthCaption" class="muted-note" style="margin-top:10px"></div><div class="ch"><canvas id="analyticsMonthPlantChart"></canvas></div></div>
-<div class="bar analytics-filters"><label>Plant filter <select id="analyticsPlantFilter"><option value="all">All plants</option><option value="a">Auditorium</option><option value="s">South Block</option><option value="m">Administration Block</option></select></label><button class="btn" id="analyticsExport">Export analytics CSV</button></div>
-<div class="two"><div class="card"><h4>Plant performance summary</h4><div class="table-wrap" id="analyticsPlantTable"></div></div><div class="card"><h4>Share of total generation</h4><div class="ch"><canvas id="analyticsShareChart"></canvas></div><p class="muted-note">Share is calculated from recorded kWh in the selected period.</p></div></div>
+
+
 
 <div class="section-heading analytics-extra-heading"><div><span class="eyebrow">SEASONAL CONTEXT</span><h2>Seasonal comparison</h2><p>Calendar grouping: Summer (Mar–May), Monsoon (Jun–Sep), Winter (Oct–Feb).</p></div><span class="section-icon">☁</span></div>
 <div class="grid" id="analyticsSeasonStats"></div>
@@ -534,8 +534,8 @@ function renderAdvancedAnalytics(sel,a,b){
  const dateLabel=d=>d?new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—';
  $('analyticsPeriodStats').innerHTML=[card('Highest day',hi?fmt(hi.v)+' kWh':'—',hi?dateLabel(hi.d):'No data'),card('Lowest day',lo?fmt(lo.v)+' kWh':'—',lo?dateLabel(lo.d):'No data'),card('Average day',fmt(avg)+' kWh',days+' recorded days'),card('Median day',fmt(med)+' kWh','Less affected by extreme low days')].join('');
  const plantFilter=$('analyticsPlantFilter')?.value||'all',plantRows=P.filter(p=>plantFilter==='all'||p.k===plantFilter);
- $('analyticsPlantTable').innerHTML='<table><thead><tr><th>Plant</th><th>kWh</th><th>Yield kWh/kWp</th><th>Avg/day</th><th>Median/day</th><th>CUF</th><th>Best day</th><th>Low days</th></tr></thead><tbody>'+plantRows.map(p=>{const z=statsFor(filtered),vals=filtered.filter(r=>r[p.k]!=null),v=vals.map(r=>({d:r.d,v:r[p.k]})),s=v.reduce((x,y)=>x+y.v,0),av=v.length?s/v.length:0,sv=[...v].sort((x,y)=>x.v-y.v),md=sv.length?(sv.length%2?sv[(sv.length-1)/2].v:(sv[sv.length/2-1].v+sv[sv.length/2].v)/2):null,best=v.length?v.reduce((x,y)=>x.v>y.v?x:y):null,low=v.filter(x=>av>0&&x.v<av*.5).length,cuf=vals.length?s/(p.kwp*24*vals.length)*100:0;return `<tr><td>${p.n}<div class="stat-sub">${p.kwp} kWp</div></td><td>${fmt(s)}</td><td>${fmt(s/p.kwp)}</td><td>${fmt(av)}</td><td>${fmt(md)}</td><td>${fmt(cuf)}%</td><td>${best?fmt(best.v)+'<div class="stat-sub">'+dateLabel(best.d)+'</div>':'—'}</td><td>${low}</td></tr>`}).join('')+'</tbody></table>';
- const colors=['#2e9e5b','#f2b705','#0f6fb4'];mk('analyticsShareChart','doughnut',P.map(p=>p.n),[{label:'Generation share (kWh)',data:P.map(p=>sum(filtered,p.k)||0),backgroundColor:colors,borderWidth:2,borderColor:'#fff'}]);
+ // Plant performance summary and generation-share cards were intentionally removed from the Analytics tab.
+
  const seasons=[{n:'Summer (Mar–May)',m:[3,4,5]},{n:'Monsoon (Jun–Sep)',m:[6,7,8,9]},{n:'Winter (Oct–Feb)',m:[10,11,12,1,2]}];$('analyticsSeasonStats').innerHTML=seasons.map(se=>{const rs=rows.filter(r=>{const m=Number(r.d.slice(5,7));return se.m.includes(m)&&has(r)}),k=rs.reduce((x,r)=>x+tot(r),0);return card(se.n,fmt(k)+' kWh',rs.length+' recorded days • '+fmt(rs.length?k/rs.length:null)+' kWh/day')}).join('');
 }
 function renderAnalyticsMonthComparison(){
@@ -561,7 +561,7 @@ function renderAnalyticsMonthComparison(){
  } else {const note=canvas?.parentElement?.querySelector('.analytics-month-empty');if(note)note.remove();}
 }
 $('analyticsPlantMonthTabs')?.addEventListener('click',e=>{const b=e.target.closest('[data-amonth]');if(!b)return;const y=(window.solarPlantCompareMonth||window.solarSelectedMonth||today.slice(0,7)).slice(0,4);window.solarPlantCompareMonth=y+'-'+b.dataset.amonth;renderAnalyticsMonthComparison();});
-$('analyticsPlantFilter')?.addEventListener('change',()=>draw());$('analyticsExport')?.addEventListener('click',()=>{const [a,b]=range(),rs=inR(a,b),head=['Date',...P.map(p=>p.n), 'Total kWh'];const csv=[head,...rs.map(r=>[r.d,...P.map(p=>r[p.k]??''),has(r)?tot(r):''])].map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');const link=document.createElement('a');link.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));link.download='vidya_solar_analytics_'+a+'_to_'+b+'.csv';link.click()});
+
 
 function mk(id,type,labels,datasets){
  const canvas=$(id); if(!canvas||typeof Chart==="undefined") return;

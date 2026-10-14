@@ -343,7 +343,7 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
 </section>
 
 <section id="en" class="hide"><div class="section-heading"><div><span class="eyebrow">BEYOND GENERATION</span><h2>Solar energy. Measurable impact.</h2><p>Explore what the campus solar generation could mean for climate, resources and everyday life.</p></div><span class="section-icon">♧</span></div>
-<div class="impact-hero"><div><span class="eyebrow">CAMPUS SUSTAINABILITY SNAPSHOT</span><h3>Clean energy powering a greener tomorrow</h3><p>Every unit of solar electricity generated can reduce the need for grid electricity. The equivalents below are illustrative estimates calculated from the production records currently available in this dashboard.</p></div><div class="impact-number"><strong id="impactEnergy">—</strong><span>Total recorded solar generation across all three installations</span></div></div>
+<div class="impact-hero"><div><span class="eyebrow">CAMPUS SUSTAINABILITY SNAPSHOT</span><h3>Clean energy powering a greener tomorrow</h3><p>Every unit of solar electricity generated can reduce the need for grid electricity. The equivalents below are illustrative estimates calculated from the production records currently available in this dashboard.</p></div><div class="impact-number"><strong id="impactEnergy">—</strong><span>Total from imported monthly records (missing values excluded; overlapping daily records not added)</span></div></div>
 <div class="impact-grid" id="envk"></div>
 <div class="monthly-archive-panel" style="margin:22px 0;padding:20px;border:1px solid var(--line,#dce8df);border-radius:18px;background:var(--card,#fff)">
 <div class="section-heading" style="margin-top:0"><div><span class="eyebrow">HISTORICAL MONTHLY RECORDS</span><h2>Monthly generation by installation</h2><p>Imported from the supplied Solar Data workbook. The first column uses Month-YY format (for example, May-18). Blank cells mean no numeric generation value was supplied for that installation in that month.</p></div></div>
@@ -517,7 +517,7 @@ function draw(){
  const vs=valid(sel),tots=vs.map(tot);
  $("stat").innerHTML=[card("Highest daily",fmt(Math.max(...tots,0))+" kWh"),card("Lowest valid daily",tots.length?fmt(Math.min(...tots))+" kWh":"—"),card("Average daily",fmt(tots.length?tots.reduce((x,y)=>x+y,0)/tots.length:null)+" kWh","Missing days excluded"),card("Recorded days",vs.length,"Missing days in range: "+(sel.length-vs.length))].join("");
  // Sustainability impact: use all available recorded generation; equivalents are estimates.
- const impactKwh=Math.max(0,Number(life)||0), co2kg=impactKwh*CFG.CO2_KG_PER_KWH;
+ const archiveKwh=Array.isArray(MONTHLY_ARCHIVE)?MONTHLY_ARCHIVE.reduce((acc,r)=>acc+(Number.isFinite(r.a)?r.a:0)+(Number.isFinite(r.s)?r.s:0)+(Number.isFinite(r.m)?r.m:0),0):0;\n const dailyLifetimeKwh=Math.max(0,Number(life)||0);\n const impactKwh=archiveKwh>0?archiveKwh:dailyLifetimeKwh; const co2kg=impactKwh*CFG.CO2_KG_PER_KWH;
  $("impactEnergy").textContent=en(impactKwh);
  const metric=(icon,label,value,detail)=>`<div class="impact-card"><div class="ico">${icon}</div><div class="label">${label}</div><strong>${value}</strong><small>${detail}</small></div>`;
  const lowCoal=impactKwh*0.55/1000,highCoal=impactKwh*0.70/1000;

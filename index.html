@@ -455,19 +455,19 @@ function draw(){
  }else if(level==="month"){
    const year=(window.solarSelectedMonth||today.slice(0,7)).slice(0,4);
    chartRows=Array.from({length:12},(_,i)=>{
-     const key=year+"-"+String(i+1).padStart(2,"0"),rs=rows.filter(r=>r.d.startsWith(key));
-     return {d:key,label:new Date(Number(year),i,1).toLocaleDateString("en-IN",{month:"short"}),a:sum(rs,"a"),s:sum(rs,"s"),m:sum(rs,"m")};
+     const key=year+"-"+String(i+1).padStart(2,"0"),rs=periodRows.filter(r=>r.d.startsWith(key));
+     return {d:key,label:new Date(Number(year),i,1).toLocaleDateString("en-IN",{month:"long"}),a:sum(rs,"a"),s:sum(rs,"s"),m:sum(rs,"m")};
    });
  }else if(level==="year"){
    if(window.solarSelectedYear&&window.solarSelectedYear!=="all"){
      const year=window.solarSelectedYear;
      chartRows=Array.from({length:12},(_,i)=>{
-       const key=year+"-"+String(i+1).padStart(2,"0"),rs=rows.filter(r=>r.d.startsWith(key));
-       return {d:key,label:new Date(Number(year),i,1).toLocaleDateString("en-IN",{month:"short"}),a:sum(rs,"a"),s:sum(rs,"s"),m:sum(rs,"m")};
+       const key=year+"-"+String(i+1).padStart(2,"0"),rs=periodRows.filter(r=>r.d.startsWith(key));
+       return {d:key,label:new Date(Number(year),i,1).toLocaleDateString("en-IN",{month:"long"}),a:sum(rs,"a"),s:sum(rs,"s"),m:sum(rs,"m")};
      });
    }else{
-     const years=[...new Set(rows.map(r=>r.d.slice(0,4)))].sort();
-     chartRows=years.map(year=>{const rs=rows.filter(r=>r.d.startsWith(year));return {d:year,label:year,a:sum(rs,"a"),s:sum(rs,"s"),m:sum(rs,"m")}});
+     const years=[...new Set(periodRows.map(r=>r.d.slice(0,4)))].sort();
+     chartRows=years.map(year=>{const rs=periodRows.filter(r=>r.d.startsWith(year));return {d:year,label:year,a:sum(rs,"a"),s:sum(rs,"s"),m:sum(rs,"m")}});
    }
  }
  const td=rows.find(r=>r.d==today),yd=rows.find(r=>r.d==addD(today,-1));
@@ -642,10 +642,10 @@ $("csv").onclick=()=>{const t="Date,Auditorium,South Block,Administration Block,
  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([t],{type:"text/csv"}));a.download="solar_daily_production.csv";a.click()};
 function initSolarPeriodControls_(){
  const names=["January","February","March","April","May","June","July","August","September","October","November","December"];
- const dataYears=rows.map(r=>Number(r.d.slice(0,4))).filter(Number.isFinite);
+ const dataYears=[...rows.map(r=>Number(r.d.slice(0,4))),...MONTHLY_ARCHIVE.map(r=>{const m=String(r.label||"").match(/^[A-Za-z]{3}-(\\d{2})$/);return m?2000+Number(m[1]):NaN;})].filter(Number.isFinite);
  const thisYear=Number(today.slice(0,4));
- const firstYear=Math.min(2025,...dataYears);
- const lastYear=Math.max(2030,thisYear,...dataYears);
+ const firstYear=Math.min(2018,...dataYears);
+ const lastYear=Math.max(thisYear,...dataYears);
  const years=Array.from({length:lastYear-firstYear+1},(_,i)=>String(firstYear+i));
  const monthNow=today.slice(0,7);
  if(!window.solarSelectedMonth)window.solarSelectedMonth=monthNow;
@@ -662,14 +662,14 @@ function initSolarPeriodControls_(){
   });
  };
  const [selectedY,selectedM]=window.solarSelectedMonth.split("-").map(Number);
- const monthList=names.map((n,i)=>({label:n.slice(0,3),value:selectedY+"-"+String(i+1).padStart(2,"0")}));
+ const monthList=names.map((n,i)=>({label:n,value:selectedY+"-"+String(i+1).padStart(2,"0")}));
  makeTabs("dayYearTabs",years.map(y=>({label:y,value:y})),()=>window.solarSelectedDate.slice(0,4),y=>{
   const old=window.solarSelectedDate.slice(8,10),m=window.solarSelectedDate.slice(5,7);
   const max=new Date(Number(y),Number(m),0).getDate();
   window.solarSelectedDate=y+"-"+m+"-"+String(Math.min(Number(old),max)).padStart(2,"0");
   updateDayMonthCaption();
  });
- makeTabs("dayMonthTabs",names.map((n,i)=>({label:n.slice(0,3),value:String(i+1).padStart(2,"0")})),()=>window.solarSelectedDate.slice(5,7),m=>{
+ makeTabs("dayMonthTabs",names.map((n,i)=>({label:n,value:String(i+1).padStart(2,"0")})),()=>window.solarSelectedDate.slice(5,7),m=>{
   const y=window.solarSelectedDate.slice(0,4),max=new Date(Number(y),Number(m),0).getDate();
   window.solarSelectedDate=y+"-"+m+"-"+String(Math.min(Number(window.solarSelectedDate.slice(8,10)),max)).padStart(2,"0");
  });
@@ -682,7 +682,7 @@ function initSolarPeriodControls_(){
 }
 makeTabs("dayTabs",Array.from({length:days},(_,i)=>({label:String(i+1),value:dayMonth+"-"+String(i+1).padStart(2,"0")})),()=>window.solarSelectedDate,d=>{window.solarSelectedDate=d;window.solarSelectedMonth=d.slice(0,7)});
  makeTabs("monthYearTabs",years.map(y=>({label:y,value:y})),()=>window.solarSelectedMonth.slice(0,4),y=>{window.solarSelectedMonth=y+"-"+window.solarSelectedMonth.slice(5,7)});
- makeTabs("monthTabs",names.map((n,i)=>({label:n.slice(0,3),value:String(i+1).padStart(2,"0")})),()=>window.solarSelectedMonth.slice(5,7),m=>{
+ makeTabs("monthTabs",names.map((n,i)=>({label:n,value:String(i+1).padStart(2,"0")})),()=>window.solarSelectedMonth.slice(5,7),m=>{
   const y=window.solarSelectedMonth.slice(0,4);
   window.solarSelectedMonth=y+"-"+m;
   const day=Math.min(Number(window.solarSelectedDate.slice(8,10)),new Date(Number(y),Number(m),0).getDate());

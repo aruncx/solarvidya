@@ -539,7 +539,9 @@ function draw(){
  const vs=valid(sel),tots=vs.map(tot);
  $("stat").innerHTML=[card("Highest daily",fmt(Math.max(...tots,0))+" kWh"),card("Lowest valid daily",tots.length?fmt(Math.min(...tots))+" kWh":"—"),card("Average daily",fmt(tots.length?tots.reduce((x,y)=>x+y,0)/tots.length:null)+" kWh","Missing days excluded"),card("Recorded days",vs.length,"Missing days in range: "+(sel.length-vs.length))].join("");
  // Sustainability impact: use all available recorded generation; equivalents are estimates.
- const archiveKwh=Array.isArray(MONTHLY_ARCHIVE)?MONTHLY_ARCHIVE.reduce((acc,r)=>acc+(Number.isFinite(r.a)?r.a:0)+(Number.isFinite(r.s)?r.s:0)+(Number.isFinite(r.m)?r.m:0),0):0;\n const dailyLifetimeKwh=Math.max(0,Number(life)||0);\n const impactKwh=archiveKwh>0?archiveKwh:dailyLifetimeKwh; const co2kg=impactKwh*CFG.CO2_KG_PER_KWH;
+ const archiveKwh=Array.isArray(MONTHLY_ARCHIVE)?MONTHLY_ARCHIVE.reduce((acc,r)=>acc+(Number.isFinite(r.a)?r.a:0)+(Number.isFinite(r.s)?r.s:0)+(Number.isFinite(r.m)?r.m:0),0):0;
+ const dailyLifetimeKwh=Math.max(0,Number(life)||0);
+ const impactKwh=archiveKwh>0?archiveKwh:dailyLifetimeKwh; const co2kg=impactKwh*CFG.CO2_KG_PER_KWH;
  $("impactEnergy").textContent=en(impactKwh);
  const metric=(icon,label,value,detail)=>`<div class="impact-card"><div class="ico">${icon}</div><div class="label">${label}</div><strong>${value}</strong><small>${detail}</small></div>`;
  const lowCoal=impactKwh*0.55/1000,highCoal=impactKwh*0.70/1000;

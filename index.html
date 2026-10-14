@@ -423,7 +423,7 @@ function monday(){const d=new Date(today+"T00:00:00Z"),w=(d.getUTCDay()+6)%7;ret
 function card(t,v,s){return`<div class="card"><h4>${t}</h4><div class="v">${v}</div><small>${s||""}</small></div>`}
 function archiveRows(){
  return (Array.isArray(MONTHLY_ARCHIVE)?MONTHLY_ARCHIVE:[]).map(r=>{
-  const m=String(r.label||"").match(/^([A-Za-z]{3})-(\\d{2})$/);
+  const m=String(r.label||"").match(/^([A-Za-z]{3})-(\d{2})$/);
   if(!m)return null;
   const months={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
   const y=2000+Number(m[2]), mo=months[m[1]];

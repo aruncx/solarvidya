@@ -306,29 +306,15 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
 <div class="card"><h4>Production Distribution (selected period)</h4><div class="ch"><canvas id="c2"></canvas></div></div></div></section>
 
 <section id="an" class="hide">
-<div class="period-panel">
-  <div class="period-label"><span class="period-sun">☀</span><div><b>Analysis production</b><small>Choose All, daily dates, months, or years to explore solar generation</small></div></div>
-  <div class="period-controls">
-    <div class="period-tabs period-level-tabs" id="analytics_periodLevelTabs" role="tablist" aria-label="Production view">
-      <button type="button" class="period-tab active" data-level="all" role="tab" aria-selected="true">All</button>
-      <button type="button" class="period-tab" data-level="day" role="tab" aria-selected="false">Day</button>
-      <button type="button" class="period-tab" data-level="month" role="tab" aria-selected="false">Month</button>
-      <button type="button" class="period-tab" data-level="year" role="tab" aria-selected="false">Year</button>
-    </div>
-    <div class="period-subcontrols">
-      <div id="analytics_dayYearWrap" class="period-tab-row hide"><span class="period-row-label">Year</span><div id="analytics_dayYearTabs" class="period-tabs compact-tabs" aria-label="Daily view year"></div></div>
-      <div id="analytics_dayMonthWrap" class="period-tab-row hide"><span class="period-row-label">Month</span><div id="analytics_dayMonthTabs" class="period-tabs compact-tabs" aria-label="Daily view month"></div></div>
-      <div id="analytics_dayTabsWrap" class="period-tab-row hide"><span class="period-row-label">Date</span><div class="day-tab-content"><div id="analytics_dayMonthCaption" class="day-month-caption" aria-live="polite"></div><div id="analytics_dayTabs" class="period-tabs compact-tabs day-tabs" aria-label="Day of month"></div></div></div>
-      <div id="analytics_monthYearWrap" class="period-tab-row hide"><span class="period-row-label">Year</span><div id="analytics_monthYearTabs" class="period-tabs compact-tabs" aria-label="Monthly view year"></div></div>
-      <div id="analytics_monthTabsWrap" class="period-tab-row hide"><span class="period-row-label">Month</span><div id="analytics_monthTabs" class="period-tabs compact-tabs" aria-label="Month of year"></div></div>
-      <div id="analytics_yearTabsWrap" class="period-tab-row hide"><span class="period-row-label">Year</span><div id="analytics_yearTabs" class="period-tabs compact-tabs" aria-label="Year selection"></div></div>
-    </div>
-    <select id="analytics_rng" class="sr-only" aria-hidden="true" tabindex="-1">
-      <option value="all" selected>All</option><option value="day">Day</option><option value="month">Month</option><option value="year">Year</option>
-    </select>
-    <span id="analytics_cu" class="custom-range hide"><label>From <input type="date" id="analytics_f"></label><label>To <input type="date" id="analytics_t"></label></span>
+<div class="period-panel analytics-period-panel">
+  <div class="period-label"><span class="period-sun">☀</span><div><b>Explore analytics</b><small>Select All records or choose a month and year. Analytics charts and statistics update for that period.</small></div></div>
+  <div class="period-controls analytics-month-year-controls" style="display:flex;align-items:end;gap:12px;flex-wrap:wrap">
+    <button type="button" class="period-tab active" id="analyticsAllRecords">All</button>
+    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px">Select Year<select id="analyticsYearSelect" style="min-width:130px;padding:12px;border:1px solid #dbe8df;border-radius:12px;background:#fff;color:#183d2a"></select></label>
+    <label style="display:flex;flex-direction:column;gap:6px;font-size:13px">Select Month<select id="analyticsMonthSelect" style="min-width:160px;padding:12px;border:1px solid #dbe8df;border-radius:12px;background:#fff;color:#183d2a"></select></label>
+    <button type="button" class="period-tab active" id="analyticsApplyMonth" style="background:#167b49;color:white">Show selected month</button>
   </div>
-  <div class="period-status"><span class="live-dot"></span><span id="analytics_periodCaption">Showing all available records</span><span class="period-hint">Analytics charts use the selected production period</span></div>
+  <div class="period-status"><span class="live-dot"></span><span id="analytics_periodCaption">Showing all available records</span><span class="period-hint">Production charts, period statistics and installation comparison follow this selection</span></div>
 </div>
 <div class="section-heading"><div><span class="eyebrow">TRENDS & INSIGHTS</span><h2>Production analytics</h2><p>Understand energy generation over time.</p></div><span class="section-icon">⌁</span></div><div class="two"><div class="card"><h4>Monthly Production (kWh)</h4><div class="ch"><canvas id="c3"></canvas></div></div>
 <div class="card"><h4>Cumulative Production (kWh)</h4><div class="ch"><canvas id="c4"></canvas></div></div></div>
@@ -589,7 +575,7 @@ function renderAdvancedAnalytics(sel,a,b){
  const plantFilter=$('analyticsPlantFilter')?.value||'all',plantRows=P.filter(p=>plantFilter==='all'||p.k===plantFilter);
  // Plant performance summary and generation-share cards were intentionally removed from the Analytics tab.
 
- const seasons=[{n:'Summer (Mar–May)',m:[3,4,5]},{n:'Monsoon (Jun–Sep)',m:[6,7,8,9]},{n:'Winter (Oct–Feb)',m:[10,11,12,1,2]}];$('analyticsSeasonStats').innerHTML=seasons.map(se=>{const rs=rows.filter(r=>{const m=Number(r.d.slice(5,7));return se.m.includes(m)&&has(r)}),k=rs.reduce((x,r)=>x+tot(r),0);return card(se.n,fmt(k)+' kWh',rs.length+' recorded days • '+fmt(rs.length?k/rs.length:null)+' kWh/day')}).join('');
+ const seasons=[{n:'Summer (Mar–May)',m:[3,4,5]},{n:'Monsoon (Jun–Sep)',m:[6,7,8,9]},{n:'Winter (Oct–Feb)',m:[10,11,12,1,2]}];$('analyticsSeasonStats').innerHTML=seasons.map(se=>{const rs=filtered.filter(r=>{const m=Number(r.d.slice(5,7));return se.m.includes(m)}),k=rs.reduce((x,r)=>x+tot(r),0);return card(se.n,fmt(k)+' kWh',rs.length+' recorded day(s) • '+fmt(rs.length?k/rs.length:null)+' kWh/day in selected period')}).join('');
 }
 function renderAnalyticsMonthComparison(){
  const host=$('analyticsPlantMonthTabs'); if(!host)return;
@@ -853,12 +839,40 @@ window.onload=()=>{try{$("lu").value=localStorage.getItem("su")||""}catch(e){}lo
 document.getElementById("dayTabs")?.addEventListener("click",()=>setTimeout(updateDayMonthCaption,0));
 document.getElementById("dayMonthTabs")?.addEventListener("click",()=>setTimeout(updateDayMonthCaption,0));
 updateDayMonthCaption();
+
+function initAnalyticsMonthYearSelectors_(){
+ const ys=document.getElementById('analyticsYearSelect'),ms=document.getElementById('analyticsMonthSelect');
+ if(!ys||!ms)return;
+ const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+ const years=Array.from({length:Math.max(2026,Number(today.slice(0,4)))-2018+1},(_,i)=>2018+i);
+ ys.innerHTML=years.map(y=>`<option value="${y}">${y}</option>`).join('');
+ ms.innerHTML=months.map((m,i)=>`<option value="${String(i+1).padStart(2,'0')}">${m}</option>`).join('');
+ const current=(window.solarSelectedMonth||today.slice(0,7)).split('-');
+ ys.value=years.includes(Number(current[0]))?current[0]:String(years[years.length-1]);ms.value=current[1];
+ const apply=()=>{
+   window.solarSelectedMonth=ys.value+'-'+ms.value;
+   window.solarSelectedYear=ys.value;
+   window.solarPeriodLevel='selectedmonth';
+   window.solarPlantCompareMonth=window.solarSelectedMonth;
+   document.getElementById('analyticsAllRecords').classList.remove('active');
+   document.getElementById('analyticsApplyMonth').classList.add('active');
+   const label=months[Number(ms.value)-1]+' '+ys.value;
+   document.getElementById('analytics_periodCaption').textContent='Showing production for '+label;
+   document.getElementById('periodCaption').textContent='Showing production for '+label;
+   updateSolarPeriodControls_();syncAnalyticsPeriodControls_();draw();
+ };
+ document.getElementById('analyticsApplyMonth').onclick=apply;
+ document.getElementById('analyticsAllRecords').onclick=()=>{
+   window.solarPeriodLevel='all';
+   document.getElementById('analyticsAllRecords').classList.add('active');
+   document.getElementById('analyticsApplyMonth').classList.remove('active');
+   document.getElementById('analytics_periodCaption').textContent='Showing all available records';
+   updateSolarPeriodControls_();syncAnalyticsPeriodControls_();draw();
+ };
+}
+initAnalyticsMonthYearSelectors_();
 syncAnalyticsPeriodControls_();
 
 // Plant-comparison month buttons are rendered by renderAnalyticsMonthComparison() on every data refresh.
-// Analytics-tab Explore Production controls mirror the main period selection.
-document.querySelectorAll('#analytics_periodLevelTabs [data-level]').forEach(b=>b.addEventListener('click',()=>{
- window.solarPeriodLevel=b.dataset.level; initSolarPeriodControls_(); updateSolarPeriodControls_(); syncAnalyticsPeriodControls_();
- document.querySelectorAll('#analytics_periodLevelTabs [data-level]').forEach(x=>{const a=x.dataset.level===window.solarPeriodLevel;x.classList.toggle('active',a);x.setAttribute('aria-selected',a?'true':'false')}); draw();
-}));
+// Analytics month/year selectors are initialized above and use the same production period as Overview.
 </script></body></html>

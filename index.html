@@ -236,6 +236,8 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
 @media(max-width:390px){.impact-grid{grid-template-columns:1fr}}
 
  .analytics-extra-heading{margin-top:28px}.analytics-filters{gap:12px;align-items:end;flex-wrap:wrap}.analytics-filters label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:#64748b}.analytics-filters select{padding:10px;border:1px solid #dbe3ea;border-radius:10px;background:white;color:#183044}#analyticsPlantTable{overflow-x:auto}#analyticsPlantTable table{width:100%;border-collapse:collapse;font-size:12px}#analyticsPlantTable th,#analyticsPlantTable td{padding:10px 8px;border-bottom:1px solid #e7edf2;text-align:right;white-space:nowrap}#analyticsPlantTable th:first-child,#analyticsPlantTable td:first-child{text-align:left}#analyticsPlantTable th{color:#64748b;font-weight:700}.muted-note{font-size:11px;color:#64748b}.analytics-alert{padding:10px 12px;margin:8px 0;border-radius:10px;background:#fff7ed;color:#9a3412;font-size:13px}.analytics-alert.red{background:#fef2f2;color:#b91c1c}.analytics-alert.green{background:#f0fdf4;color:#166534}.stat-line{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #edf1f5;font-size:13px}.stat-line strong{text-align:right}.stat-sub{font-size:11px;color:#64748b;margin-top:3px}.period-tabs.compact-tabs{display:flex;flex-wrap:wrap;gap:6px}.analytics-month-empty{font-size:13px;color:#64796d}.card .ch{min-height:260px}
+
+.period-selectors{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin:14px 2px 8px}.period-selectors label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:650;color:var(--mut,#5e7469)}.period-selectors select,.period-selectors input{min-width:155px;max-width:100%;height:46px;padding:9px 12px;border:1px solid var(--line,#dce8df);border-radius:12px;background:var(--card,#fff);color:var(--ink,#163c2c);font:inherit;font-size:15px}.period-selectors input{min-width:180px}.period-selectors select:focus,.period-selectors input:focus{outline:2px solid #16804a;outline-offset:1px}@media(max-width:600px){.period-selectors{align-items:stretch}.period-selectors label,.period-selectors select,.period-selectors input{width:100%;min-width:0}}
 </style></head><body>
 <header class="site-header">
   <div class="brand">
@@ -266,15 +268,16 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
 <div id="msg"></div>
 <section id="ov">
 <div class="period-panel">
-  <div class="period-label"><span class="period-sun">☀</span><div><b>Explore production</b><small>Choose All, daily dates, months, or years to explore solar generation</small></div></div>
+  <div class="period-label"><span class="period-sun">☀</span><div><b>Explore production</b><small>Select All production or choose a month and year to update the charts and block summaries</small></div></div>
   <div class="period-controls">
     <div class="period-tabs period-level-tabs" id="periodLevelTabs" role="tablist" aria-label="Production view">
-      <button type="button" class="period-tab active" data-level="all" role="tab" aria-selected="true">All</button>
-      <button type="button" class="period-tab" data-level="day" role="tab" aria-selected="false">Day</button>
-      <button type="button" class="period-tab" data-level="month" role="tab" aria-selected="false">Month</button>
-      <button type="button" class="period-tab" data-level="year" role="tab" aria-selected="false">Year</button>
+      <button type="button" class="period-tab active" id="periodAllButton" data-level="all" role="tab" aria-selected="true">All</button>
     </div>
-    <div class="period-subcontrols">
+    <div class="period-selectors" aria-label="Select production period">
+      <label>Month <select id="periodMonthSelect" aria-label="Select month"></select></label>
+      <label>Year <select id="periodYearSelect" aria-label="Select year"></select></label>
+    </div>
+    <div class="period-subcontrols hide" aria-hidden="true">
       <div id="dayYearWrap" class="period-tab-row hide"><span class="period-row-label">Year</span><div id="dayYearTabs" class="period-tabs compact-tabs" aria-label="Daily view year"></div></div>
       <div id="dayMonthWrap" class="period-tab-row hide"><span class="period-row-label">Month</span><div id="dayMonthTabs" class="period-tabs compact-tabs" aria-label="Daily view month"></div></div>
       <div id="dayTabsWrap" class="period-tab-row hide"><span class="period-row-label">Date</span><div class="day-tab-content"><div id="dayMonthCaption" class="day-month-caption" aria-live="polite"></div><div id="dayTabs" class="period-tabs compact-tabs day-tabs" aria-label="Day of month"></div></div></div>
@@ -287,14 +290,6 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
     </select>
     <span id="cu" class="custom-range hide"><label>From <input type="date" id="f"></label><label>To <input type="date" id="t"></label></span>
   </div>
-<div class="card" style="margin-top:10px;padding:14px;display:flex;gap:12px;align-items:end;flex-wrap:wrap">
-<label style="display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:13px">Select Year
-<select id="overviewYearSelect" style="min-width:130px;padding:10px;border:1px solid var(--line,#dce8df);border-radius:9px;background:var(--card,#fff);color:inherit"></select></label>
-<label style="display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:13px">Select Month
-<select id="overviewMonthSelect" style="min-width:160px;padding:10px;border:1px solid var(--line,#dce8df);border-radius:9px;background:var(--card,#fff);color:inherit"></select></label>
-<button type="button" class="btn p" id="overviewApplyMonth">Show selected month</button>
-<span id="overviewSelectedPeriod" style="font-size:13px;color:var(--mut)">Selected month filters the Overview charts and installation values.</span>
-</div>
   <div class="period-status"><span class="live-dot"></span><span id="periodCaption">Showing all available records</span><span class="period-hint">All charts and block summaries update together</span></div>
 </div>
 </div><div class="section-heading plant-heading"><div><span class="eyebrow">BLOCK-WISE BREAKDOWN</span><h2>Where is the energy coming from?</h2><p>Compare production from each building for the selected period.</p></div><span class="section-icon">▥</span></div>
@@ -305,7 +300,7 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
   <div class="card plant-chart-card"><div class="plant-chart-title"><span class="plant-dot admin-dot"></span><div><h4>Administration Block</h4><small>120 kWp · Meter Mf-50</small></div></div><div class="ch"><canvas id="c7"></canvas></div></div>
   <div class="card plant-chart-card"><div class="plant-chart-title"><span class="plant-dot total-dot"></span><div><h4>Total Campus Production</h4><small>Combined generation · all three installations</small></div></div><div class="ch"><canvas id="c8"></canvas></div></div>
 </div>
-<span class="section-icon">↗</span></div><div class="big">TOTAL SOLAR ENERGY GENERATED (available records)<b id="life"></b><small id="since"></small></div>
+<div class="big">TOTAL SOLAR ENERGY GENERATED (available records)<b id="life"></b><small id="since"></small></div>
 <div class="grid" id="kpi"></div>
 <div class="two"><div class="card"><h4>Daily Solar Production (kWh)</h4><div class="ch"><canvas id="c1"></canvas></div></div>
 <div class="card"><h4>Production Distribution (selected period)</h4><div class="ch"><canvas id="c2"></canvas></div></div></div></section>
@@ -405,7 +400,7 @@ async function load(){
  else try{const r=await fetch(CFG.API_URL+"?action=readings");const j=await r.json();rows=j.rows||[];
   if(!rows.length)$("msg").innerHTML='<div class="card">Welcome to the Vidya Solar Energy Monitoring Dashboard. Solar production data will appear here after the first verified meter readings are submitted.</div>'}
  catch(e){$("msg").innerHTML='<div class="card err">Could not load data from Google Sheets. Please retry later.</div>'}
- rows.sort((a,b)=>a.d<b.d?-1:1);initSolarPeriodControls_();updateSolarPeriodControls_();const refreshedAt=new Date().toLocaleString("en-IN",{timeZone:"Asia/Kolkata",day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true});$("upd").textContent="Latest record: "+(rows.length?rows[rows.length-1].d:"none")+" • Dashboard last refreshed: "+refreshedAt+" IST";draw()}
+ rows.sort((a,b)=>a.d<b.d?-1:1);initSolarPeriodControls_();initSimplePeriodSelectors_();updateSolarPeriodControls_();const refreshedAt=new Date().toLocaleString("en-IN",{timeZone:"Asia/Kolkata",day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true});$("upd").textContent="Latest record: "+(rows.length?rows[rows.length-1].d:"none")+" • Dashboard last refreshed: "+refreshedAt+" IST";draw()}
 
 function range(){
  const level=window.solarPeriodLevel||"all";
@@ -480,19 +475,19 @@ function draw(){
  }else if(level==="month"){
    const year=(window.solarSelectedMonth||today.slice(0,7)).slice(0,4);
    chartRows=Array.from({length:12},(_,i)=>{
-     const key=year+"-"+String(i+1).padStart(2,"0"),rs=periodRows.filter(r=>r.d.startsWith(key));
+     const key=year+"-"+String(i+1).padStart(2,"0"),rs=sel.filter(r=>r.d.startsWith(key));
      return {d:key,label:new Date(Number(year),i,1).toLocaleDateString("en-IN",{month:"long"}),a:sum(rs,"a"),s:sum(rs,"s"),m:sum(rs,"m")};
    });
  }else if(level==="year"){
    if(window.solarSelectedYear&&window.solarSelectedYear!=="all"){
      const year=window.solarSelectedYear;
      chartRows=Array.from({length:12},(_,i)=>{
-       const key=year+"-"+String(i+1).padStart(2,"0"),rs=periodRows.filter(r=>r.d.startsWith(key));
+       const key=year+"-"+String(i+1).padStart(2,"0"),rs=sel.filter(r=>r.d.startsWith(key));
        return {d:key,label:new Date(Number(year),i,1).toLocaleDateString("en-IN",{month:"long"}),a:sum(rs,"a"),s:sum(rs,"s"),m:sum(rs,"m")};
      });
    }else{
-     const years=[...new Set(periodRows.map(r=>r.d.slice(0,4)))].sort();
-     chartRows=years.map(year=>{const rs=periodRows.filter(r=>r.d.startsWith(year));return {d:year,label:year,a:sum(rs,"a"),s:sum(rs,"s"),m:sum(rs,"m")}});
+     const years=[...new Set(sel.map(r=>r.d.slice(0,4)))].sort();
+     chartRows=years.map(year=>{const rs=sel.filter(r=>r.d.startsWith(year));return {d:year,label:year,a:sum(rs,"a"),s:sum(rs,"s"),m:sum(rs,"m")}});
    }
  }
  const td=rows.find(r=>r.d==today),yd=rows.find(r=>r.d==addD(today,-1));
@@ -753,7 +748,7 @@ function updateSolarPeriodControls_(){
  $("yearTabsWrap").classList.toggle("hide",level!=="year");
  // Keep the custom From/To range visible in the All view; date/month/year tabs replace it in other views.
  $("cu").classList.toggle("hide",level!=="all");
- const caps={all:"Choose a From and To date to filter production, or keep the full available range",selectedmonth:"Showing only the selected month and year",day:"Select a date to view that day's production; the graph shows every date in the selected month",month:"Select a month; the graph compares January–December for the chosen year",year:window.solarSelectedYear!=="all"?"Showing production for "+window.solarSelectedYear:"Comparing annual production across all available years"};
+ const caps={all:"Showing all available production records",selectedmonth:"Showing production for "+new Date(Number((window.solarSelectedMonth||today.slice(0,7)).slice(0,4)),Number((window.solarSelectedMonth||today.slice(0,7)).slice(5,7))-1,1).toLocaleDateString("en-IN",{month:"long",year:"numeric"}),day:"Select a date to view that day's production; the graph shows every date in the selected month",month:"Select a month; the graph compares January–December for the chosen year",year:window.solarSelectedYear!=="all"?"Showing production for "+window.solarSelectedYear:"Comparing annual production across all available years"};
  $("periodCaption").textContent=caps[level]||"Selected period";$("rng").value=level;
  syncAnalyticsPeriodControls_();
 }
@@ -771,12 +766,32 @@ function initOverviewMonthYearSelectors(){
  ys.onchange=()=>{window.solarSelectedYear=ys.value;};
  ms.onchange=()=>{};
 }
-initOverviewMonthYearSelectors();
+
+function initSimplePeriodSelectors_(){
+ const month=$("periodMonthSelect"),year=$("periodYearSelect");if(!month||!year)return;
+ const monthNames=["January","February","March","April","May","June","July","August","September","October","November","December"];
+ const years=[...new Set([...rows.map(r=>Number(String(r.d).slice(0,4))),...MONTHLY_ARCHIVE.map(r=>{const m=String(r.label||"").match(/^[A-Za-z]{3}-(\d{2})$/);return m?2000+Number(m[1]):NaN;}),Number(today.slice(0,4)),2018].filter(Number.isFinite))].sort((a,b)=>a-b);
+ month.innerHTML=monthNames.map((m,i)=>`<option value="${String(i+1).padStart(2,"0")}">${m}</option>`).join("");
+ year.innerHTML=years.map(y=>`<option value="${y}">${y}</option>`).join("");
+ const current=window.solarSelectedMonth||today.slice(0,7);
+ year.value=current.slice(0,4);month.value=current.slice(5,7);
+ function apply(){
+   const key=year.value+"-"+month.value;
+   window.solarSelectedMonth=key;
+   window.solarSelectedYear=year.value;
+   window.solarPeriodLevel="selectedmonth";
+   updateSolarPeriodControls_();draw();
+ }
+ month.onchange=apply;year.onchange=apply;
+ const all=$("periodAllButton");if(all)all.onclick=()=>{window.solarPeriodLevel="all";updateSolarPeriodControls_();draw();};
+}
+
 // Initialize the date-range inputs so From/To are visible and usable immediately.
 if($("f")&&!$("f").value)$("f").value=rows.length?rows[0].d:today;
 if($("t")&&!$("t").value)$("t").value=today;
 if($("f"))$("f").max=today;
 if($("t"))$("t").max=today;
+initSimplePeriodSelectors_();
 initSolarPeriodControls_();
 document.querySelectorAll("[data-level]").forEach(b=>b.addEventListener("click",()=>{
  window.solarPeriodLevel=b.dataset.level;

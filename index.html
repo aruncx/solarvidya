@@ -287,6 +287,14 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
     </select>
     <span id="cu" class="custom-range hide"><label>From <input type="date" id="f"></label><label>To <input type="date" id="t"></label></span>
   </div>
+<div class="card" style="margin-top:10px;padding:14px;display:flex;gap:12px;align-items:end;flex-wrap:wrap">
+<label style="display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:13px">Select Year
+<select id="overviewYearSelect" style="min-width:130px;padding:10px;border:1px solid var(--line,#dce8df);border-radius:9px;background:var(--card,#fff);color:inherit"></select></label>
+<label style="display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:13px">Select Month
+<select id="overviewMonthSelect" style="min-width:160px;padding:10px;border:1px solid var(--line,#dce8df);border-radius:9px;background:var(--card,#fff);color:inherit"></select></label>
+<button type="button" class="btn p" id="overviewApplyMonth">Show selected month</button>
+<span id="overviewSelectedPeriod" style="font-size:13px;color:var(--mut)">Selected month filters the Overview charts and installation values.</span>
+</div>
   <div class="period-status"><span class="live-dot"></span><span id="periodCaption">Showing all available records</span><span class="period-hint">All charts and block summaries update together</span></div>
 </div>
 </div><div class="section-heading plant-heading"><div><span class="eyebrow">BLOCK-WISE BREAKDOWN</span><h2>Where is the energy coming from?</h2><p>Compare production from each building for the selected period.</p></div><span class="section-icon">▥</span></div>
@@ -297,15 +305,7 @@ footer{background:#0b3324;color:#c2d9ca;margin-top:10px;padding:27px 18px;line-h
   <div class="card plant-chart-card"><div class="plant-chart-title"><span class="plant-dot admin-dot"></span><div><h4>Administration Block</h4><small>120 kWp · Meter Mf-50</small></div></div><div class="ch"><canvas id="c7"></canvas></div></div>
   <div class="card plant-chart-card"><div class="plant-chart-title"><span class="plant-dot total-dot"></span><div><h4>Total Campus Production</h4><small>Combined generation · all three installations</small></div></div><div class="ch"><canvas id="c8"></canvas></div></div>
 </div>
-<div class="section-heading"><div><span class="eyebrow">CAMPUS AT A GLANCE</span><h2>Solar production overview</h2><p>Track generation across all three installations.</p>
-<div class="card" style="margin-top:14px;padding:14px;display:flex;gap:12px;align-items:end;flex-wrap:wrap">
-<label style="display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:13px">Select Year
-<select id="overviewYearSelect" style="min-width:130px;padding:10px;border:1px solid var(--line,#dce8df);border-radius:9px;background:var(--card,#fff);color:inherit"></select></label>
-<label style="display:flex;flex-direction:column;gap:5px;font-weight:600;font-size:13px">Select Month
-<select id="overviewMonthSelect" style="min-width:160px;padding:10px;border:1px solid var(--line,#dce8df);border-radius:9px;background:var(--card,#fff);color:inherit"></select></label>
-<button type="button" class="btn p" id="overviewApplyMonth">Show selected month</button>
-<span id="overviewSelectedPeriod" style="font-size:13px;color:var(--mut)">Choose a month and year to display its data.</span>
-</div></div><span class="section-icon">↗</span></div><div class="big">TOTAL SOLAR ENERGY GENERATED (available records)<b id="life"></b><small id="since"></small></div>
+<span class="section-icon">↗</span></div><div class="big">TOTAL SOLAR ENERGY GENERATED (available records)<b id="life"></b><small id="since"></small></div>
 <div class="grid" id="kpi"></div>
 <div class="two"><div class="card"><h4>Daily Solar Production (kWh)</h4><div class="ch"><canvas id="c1"></canvas></div></div>
 <div class="card"><h4>Production Distribution (selected period)</h4><div class="ch"><canvas id="c2"></canvas></div></div></div></section>
